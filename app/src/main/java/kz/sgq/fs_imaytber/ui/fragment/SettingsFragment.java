@@ -1,5 +1,7 @@
 package kz.sgq.fs_imaytber.ui.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,11 +9,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import kz.sgq.fs_imaytber.R;
 import kz.sgq.fs_imaytber.mvp.presenter.SettingsPresenterImpl;
@@ -35,7 +42,14 @@ public class SettingsFragment extends Fragment implements SettingsView {
     @BindView(R.id.password)
     EditText password;
 
+    @BindView(R.id.radioDialogs)
+    RadioButton radioDialogs;
+
+    @BindView(R.id.radioFriends)
+    RadioButton radioFriends;
+
     private SettingsPresenter presenter;
+    private SharedPreferences preferences;
 
     @Nullable
     @Override
@@ -49,6 +63,16 @@ public class SettingsFragment extends Fragment implements SettingsView {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter = new SettingsPresenterImpl(this);
+        preferences = Objects.requireNonNull(getContext())
+                .getSharedPreferences("local", Context.MODE_PRIVATE);
+        init();
+    }
+
+    private void init() {
+        if (preferences.getBoolean("main_fragment", true))
+            radioDialogs.setChecked(true);
+        else
+            radioFriends.setChecked(true);
     }
 
     @OnClick(R.id.save)
@@ -57,6 +81,24 @@ public class SettingsFragment extends Fragment implements SettingsView {
             presenter.onClickNick(nick.getText().toString());
         if (password.length() >= 5)
             presenter.onClickPassword(password.getText().toString());
+    }
+
+    @OnCheckedChanged({R.id.radioDialogs, R.id.radioFriends})
+    public void onRadioButtonCheckChanged(CompoundButton button, boolean checked) {
+        if(checked) {
+            switch (button.getId()) {
+                case R.id.radioDialogs:
+                    preferences.edit()
+                            .putBoolean("main_fragment", true)
+                            .apply();
+                    break;
+                case R.id.radioFriends:
+                    preferences.edit()
+                            .putBoolean("main_fragment", false)
+                            .apply();
+                    break;
+            }
+        }
     }
 
 

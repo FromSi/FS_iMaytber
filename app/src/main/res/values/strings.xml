@@ -5,4 +5,5 @@
     <string name="cancel">cancel</string>
     <string name="ok">ok</string>
     <string name="exit">Вы точно хотите выйти из аккаунта?</string>
+    <string name="id_user">#</string>
 </resources>

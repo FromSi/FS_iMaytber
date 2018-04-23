@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +26,7 @@ import kz.sgq.fs_imaytber.R;
 import kz.sgq.fs_imaytber.mvp.presenter.MainPresenterImpl;
 import kz.sgq.fs_imaytber.mvp.presenter.interfaces.MainPresenter;
 import kz.sgq.fs_imaytber.mvp.view.MainView;
+import kz.sgq.fs_imaytber.ui.fragment.FriendFragment;
 import kz.sgq.fs_imaytber.ui.fragment.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity implements MainView {
@@ -42,20 +45,36 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private TextView login;
     private Dialog exit;
 
+    private FriendFragment friendFragment;
+    private SettingsFragment settingsFragment;
+
     private MainPresenter presenter;
-    final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        toolbar.setTitle("Диалог");
-        navigationView.getMenu().getItem(0).setChecked(true);
         setSupportActionBar(toolbar);
         init();
+        initFragments();
         initClickMenuNavigation();
         exit = initExitAccount();
+    }
+
+    private void initFragments(){
+        friendFragment = new FriendFragment();
+        settingsFragment = new SettingsFragment();
+        if (getSharedPreferences("local", MODE_PRIVATE)
+                .getBoolean("main_fragment", true)){
+            navigationView.getMenu().getItem(0).setChecked(true);
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Диалоги");
+            stepFragments(settingsFragment);
+        } else {
+            navigationView.getMenu().getItem(1).setChecked(true);
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Друзья");
+            stepFragments(friendFragment);
+        }
     }
 
     private void init() {
@@ -114,25 +133,30 @@ public class MainActivity extends AppCompatActivity implements MainView {
         navigationView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.message:
-                    navigationView.getMenu().getItem(0).setChecked(true);
-                    navigationView.getMenu().getItem(1).setChecked(false);
-                    navigationView.getMenu().getItem(2).setChecked(false);
-                    Objects.requireNonNull(getSupportActionBar()).setTitle("Диалоги");
+                    if(!item.isChecked()) {
+                        navigationView.getMenu().getItem(0).setChecked(true);
+                        navigationView.getMenu().getItem(1).setChecked(false);
+                        navigationView.getMenu().getItem(2).setChecked(false);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle("Диалоги");
+                    }
                     break;
                 case R.id.friends:
-                    navigationView.getMenu().getItem(0).setChecked(false);
-                    navigationView.getMenu().getItem(1).setChecked(true);
-                    navigationView.getMenu().getItem(2).setChecked(false);
-                    Objects.requireNonNull(getSupportActionBar()).setTitle("Друзья");
+                    if(!item.isChecked()){
+                        navigationView.getMenu().getItem(0).setChecked(false);
+                        navigationView.getMenu().getItem(1).setChecked(true);
+                        navigationView.getMenu().getItem(2).setChecked(false);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle("Друзья");
+                        stepFragments(friendFragment);
+                    }
                     break;
                 case R.id.settings:
-                    navigationView.getMenu().getItem(0).setChecked(false);
-                    navigationView.getMenu().getItem(1).setChecked(false);
-                    navigationView.getMenu().getItem(2).setChecked(true);
-                    Objects.requireNonNull(getSupportActionBar()).setTitle("Настройки");
-                    transaction.replace(R.id.content_frame, new SettingsFragment());
-                    transaction.addToBackStack(null);
-                    transaction.commit();
+                    if(!item.isChecked()) {
+                        navigationView.getMenu().getItem(0).setChecked(false);
+                        navigationView.getMenu().getItem(1).setChecked(false);
+                        navigationView.getMenu().getItem(2).setChecked(true);
+                        Objects.requireNonNull(getSupportActionBar()).setTitle("Настройки");
+                        stepFragments(settingsFragment);
+                    }
                     break;
                 case R.id.exit:
                     exit.show();
@@ -141,6 +165,14 @@ public class MainActivity extends AppCompatActivity implements MainView {
             drawerLayout.closeDrawers();
             return false;
         });
+    }
+
+    private void stepFragments(Fragment fragment){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.content_frame, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 

@@ -151,7 +151,7 @@ public class LocalDB {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Maybe<List<TableUsers>> getUser(int idusers){
+    public Maybe<TableUsers> getUser(int idusers){
         return database.users()
                 .getUser(idusers)
                 .subscribeOn(Schedulers.io())

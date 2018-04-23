@@ -18,7 +18,7 @@ public interface DaoUsers {
     void insertAll(List<TableUsers> usersList);
 
     @Query("SELECT * FROM `tableusers` WHERE `idusers`=:idusers")
-    Maybe<List<TableUsers>> getUser(int idusers);
+    Maybe<TableUsers> getUser(int idusers);
 
     @Query("DELETE FROM `tableusers`")
     void delete();
