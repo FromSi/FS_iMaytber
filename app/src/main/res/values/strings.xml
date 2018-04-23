@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FS_iMaytber</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+    <string name="cancel">cancel</string>
+    <string name="ok">ok</string>
+    <string name="exit">Вы точно хотите выйти из аккаунта?</string>
+</resources>
