@@ -55,9 +55,9 @@ public class FriendFragment extends Fragment implements FriendView {
         super.onViewCreated(view, savedInstanceState);
         loading = new ProgressDialog(view.getContext());
         loading.setMessage("Loading");
-        presenter = new FriendPresenterImpl(this);
         addFriend = addFriendDialog(getContext());
         init(view.getContext());
+        presenter = new FriendPresenterImpl(this);
     }
 
     @OnClick(R.id.fab)
@@ -77,6 +77,8 @@ public class FriendFragment extends Fragment implements FriendView {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("ExitAndDestroy", this.getClass().getName());
+        presenter.onDestroy();
     }
 
     @Override
@@ -104,6 +106,7 @@ public class FriendFragment extends Fragment implements FriendView {
                             Integer.parseInt(text.getText().toString()) >= 1) {
                         loading.show();
                         presenter.addFriend(Integer.parseInt(text.getText().toString()));
+                        text.setText("");
                     }
                 })
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {

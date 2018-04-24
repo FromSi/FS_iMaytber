@@ -75,7 +75,6 @@ public class SignupFragment extends Fragment implements SignupView {
     private CircleImageView def3;
     private CircleImageView def4;
 
-    private FirebaseStorage mstorage;
     private StorageReference ref;
     private Uri selectedImage;
 
@@ -96,8 +95,8 @@ public class SignupFragment extends Fragment implements SignupView {
     private void init(Context context) {
         Random random = new Random(System.currentTimeMillis());
         urlAvatar = "def" + (1 + random.nextInt(4));
-        mstorage = FirebaseStorage.getInstance();
-        ref = mstorage.getReference().child("avatars/" + UUID.randomUUID().toString());
+        ref = FirebaseStorage.getInstance().getReference()
+                .child("avatars/" + UUID.randomUUID().toString());
         dialogAvatar = initDialogAvatar(context);
         presenter = new SignupPresenterImpl(this);
         loading = new ProgressDialog(context);
@@ -308,6 +307,7 @@ public class SignupFragment extends Fragment implements SignupView {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("ExitAndDestroy", this.getClass().getName());
         presenter.onDestroy();
     }
 }

@@ -1,6 +1,8 @@
 package kz.sgq.fs_imaytber.mvp.presenter;
 
 
+import android.util.Log;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableObserver;
@@ -92,6 +94,7 @@ public class LoginPresenterImpl implements LoginPresenter {
 
     @Override
     public void onDestroy() {
+        Log.d("ExitAndDestroy", this.getClass().getName());
         view = null;
         model = null;
     }

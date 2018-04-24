@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         initFragments();
         initClickMenuNavigation();
         exit = initExitAccount();
+        presenter = new MainPresenterImpl(this);
     }
 
     private void initFragments() {
@@ -94,11 +95,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
         nick = headerNavigation.findViewById(R.id.nick);
         login = headerNavigation.findViewById(R.id.login);
         avatar = headerNavigation.findViewById(R.id.avatar);
-        presenter = new MainPresenterImpl(this);
     }
 
     private Dialog initExitAccount() {
-        // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.exit)
                 .setPositiveButton(R.string.ok, (dialog, id) -> {
@@ -107,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {
                     // User cancelled the dialog
                 });
-        // Create the AlertDialog object and return it
         return builder.create();
     }
 
@@ -155,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 .putBoolean("profile", false)
                 .apply();
 
-        Intent intent = new Intent(this, BaseActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -207,5 +205,10 @@ public class MainActivity extends AppCompatActivity implements MainView {
         transaction.commit();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("ExitAndDestroy", this.getClass().getName());
+        presenter.onDestroy();
+    }
 }

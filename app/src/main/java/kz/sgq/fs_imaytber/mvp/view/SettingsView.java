@@ -4,4 +4,6 @@ public interface SettingsView {
     void setProfile(String nick, String login, String id);
     void setNick(String nick);
     void setPassword();
+    void setAvatar(String uri);
+    String getUrlAvatar();
 }
