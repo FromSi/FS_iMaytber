@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:columnCount="2"
+            android:rowCount="2">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/def1"
+                android:layout_width="@dimen/avatar_width"
+                android:layout_height="@dimen/avatar_height"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/def1"
+                android:layout_marginBottom="8dp"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/def2"
+                android:layout_width="@dimen/avatar_width"
+                android:layout_height="@dimen/avatar_height"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/def2" />
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/def3"
+                android:layout_width="@dimen/avatar_width"
+                android:layout_height="@dimen/avatar_height"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/def3" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/def4"
+                android:layout_width="@dimen/avatar_width"
+                android:layout_height="@dimen/avatar_height"
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/def4" />
+        </GridLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/storage"
+            android:layout_width="@dimen/avatar_width"
+            android:layout_height="@dimen/avatar_height"
+            android:layout_marginStart="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/avatar"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+</LinearLayout>

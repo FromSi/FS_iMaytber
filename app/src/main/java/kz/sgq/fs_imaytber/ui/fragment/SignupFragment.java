@@ -1,24 +1,44 @@
 package kz.sgq.fs_imaytber.ui.fragment;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import kz.sgq.fs_imaytber.R;
 import kz.sgq.fs_imaytber.mvp.presenter.SignupPresenterImpl;
 import kz.sgq.fs_imaytber.mvp.presenter.interfaces.LoginPresenter;
@@ -39,9 +59,18 @@ public class SignupFragment extends Fragment implements SignupView {
     @BindView(R.id.password)
     EditText password;
 
+    @BindView(R.id.avatar)
+    ImageView avatar;
+
     private final String TAG_PREF = "profile";
     private ProgressDialog loading;
     private LoginPresenter presenter;
+    private Dialog dialogAvatar;
+
+    private CircleImageView storage;
+
+    private FirebaseStorage mstorage;
+    private StorageReference ref;
 
     @Nullable
     @Override
@@ -54,12 +83,15 @@ public class SignupFragment extends Fragment implements SignupView {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mstorage = FirebaseStorage.getInstance();
+        ref = mstorage.getReference().child("avatars/"+ UUID.randomUUID().toString());
+        dialogAvatar = initDialogAvatar(view.getContext());
         presenter = new SignupPresenterImpl(this);
         loading = new ProgressDialog(view.getContext());
         loading.setMessage("Loading");
     }
 
-    @OnClick({R.id.ok, R.id.change})
+    @OnClick({R.id.ok, R.id.change, R.id.avatar})
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.ok:
@@ -69,9 +101,112 @@ public class SignupFragment extends Fragment implements SignupView {
                 OnSelectedButtonListener listener = (OnSelectedButtonListener) getActivity();
                 listener.onClickSignup();
                 break;
+            case R.id.avatar:
+                dialogAvatar.show();
+                break;
         }
     }
 
+    private void uploadAvatar(Uri uri){
+        ref.putFile(uri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    // Get a URL to the uploaded content
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                })
+                .addOnFailureListener(exception -> {
+                    // Handle unsuccessful uploads
+                    // ...
+                });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Bitmap bitmap = null;
+        switch (requestCode) {
+            case 1:
+                if (resultCode == getActivity().RESULT_OK) {
+                    avatar.setImageURI(null);
+                    storage.setImageURI(null);
+                    Uri selectedImage = data.getData();
+                    avatar.setImageURI(selectedImage);
+                    storage.setImageURI(selectedImage);
+                }
+        }
+    }
+
+    private Dialog initDialogAvatar(Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View view = getLayoutInflater().inflate(R.layout.dialog_avatar, null);
+        CircleImageView def1 = view.findViewById(R.id.def1);
+        def1.setBorderColor(getResources().getColor(R.color.colorBorderImg));
+        CircleImageView def2 = view.findViewById(R.id.def2);
+        def2.setBorderColor(getResources().getColor(R.color.colorBorderImg));
+        CircleImageView def3 = view.findViewById(R.id.def3);
+        def3.setBorderColor(getResources().getColor(R.color.colorBorderImg));
+        CircleImageView def4 = view.findViewById(R.id.def4);
+        def4.setBorderColor(getResources().getColor(R.color.colorBorderImg));
+        storage = view.findViewById(R.id.storage);
+        storage.setBorderColor(getResources().getColor(R.color.colorBorderImg));
+
+        def1.setOnClickListener(v -> {
+            def1.setBorderWidth((int) getResources().getDimension(R.dimen.border));
+            def2.setBorderWidth(0);
+            def3.setBorderWidth(0);
+            def4.setBorderWidth(0);
+            storage.setBorderWidth(0);
+            setAvatar(R.drawable.def1);
+        });
+
+        def2.setOnClickListener(v -> {
+            def1.setBorderWidth(0);
+            def2.setBorderWidth((int) getResources().getDimension(R.dimen.border));
+            def3.setBorderWidth(0);
+            def4.setBorderWidth(0);
+            storage.setBorderWidth(0);
+            setAvatar(R.drawable.def2);
+        });
+
+        def3.setOnClickListener(v -> {
+            def1.setBorderWidth(0);
+            def2.setBorderWidth(0);
+            def3.setBorderWidth((int) getResources().getDimension(R.dimen.border));
+            def4.setBorderWidth(0);
+            storage.setBorderWidth(0);
+            setAvatar(R.drawable.def3);
+        });
+
+        def4.setOnClickListener(v -> {
+            def1.setBorderWidth(0);
+            def2.setBorderWidth(0);
+            def3.setBorderWidth(0);
+            def4.setBorderWidth((int) getResources().getDimension(R.dimen.border));
+            storage.setBorderWidth(0);
+            setAvatar(R.drawable.def4);
+        });
+
+        storage.setOnClickListener(v -> {
+            def1.setBorderWidth(0);
+            def2.setBorderWidth(0);
+            def3.setBorderWidth(0);
+            def4.setBorderWidth(0);
+            storage.setBorderWidth((int) getResources().getDimension(R.dimen.border));
+            Intent intent = new Intent();
+            intent.setType("image/jpeg");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent,
+                    "Avatar"), 1);
+        });
+
+        builder.setView(view)
+                .setPositiveButton(R.string.ok, (dialog, id) -> {
+                });
+        return builder.create();
+    }
+
+    private void setAvatar(int id) {
+        avatar.setImageDrawable(getResources().getDrawable(id));
+    }
 
     @Override
     public String getNick() {
