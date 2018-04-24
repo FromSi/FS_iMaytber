@@ -5,12 +5,12 @@ public interface SignupView {
     String getLogin();
     String getPassword();
     String getToken();
+    String getUrlAvatar();
     void setupProfile();
     void showErrorNick();
     void showErrorLogin();
     void showErrorPassword();
     void showErrorConnect();
-    void showProgressBar();
     void dismissProgressBar();
     void startActivity();
 }

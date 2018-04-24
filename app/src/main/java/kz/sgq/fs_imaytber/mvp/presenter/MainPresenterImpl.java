@@ -37,6 +37,7 @@ public class MainPresenterImpl implements MainPresenter {
                     public void onNext(TableProfile profile) {
                         view.setNick(profile.getNick());
                         view.setLogin(profile.getLogin() + "#" + profile.getIduser());
+                        view.setAvatar(profile.getAvatar());
                     }
 
                     @Override

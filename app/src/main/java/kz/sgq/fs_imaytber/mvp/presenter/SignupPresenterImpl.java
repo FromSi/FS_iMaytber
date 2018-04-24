@@ -25,9 +25,8 @@ public class SignupPresenterImpl implements LoginPresenter {
         boolean password = view.getPassword().length() >= model.getMinSize();
 
         if (nick && login && password) {
-            view.showProgressBar();
             model.getSocket()
-                    .postUser("deffffff", view.getNick(),
+                    .postUser(view.getUrlAvatar(), view.getNick(),
                             view.getLogin(), view.getPassword(),
                             view.getToken())
                     .subscribe(new DisposableObserver<POSTUser>() {

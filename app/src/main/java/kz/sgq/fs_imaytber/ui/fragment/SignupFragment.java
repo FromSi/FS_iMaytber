@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
+import java.util.Random;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -66,11 +67,17 @@ public class SignupFragment extends Fragment implements SignupView {
     private ProgressDialog loading;
     private LoginPresenter presenter;
     private Dialog dialogAvatar;
+    private String urlAvatar;
 
     private CircleImageView storage;
+    private CircleImageView def1;
+    private CircleImageView def2;
+    private CircleImageView def3;
+    private CircleImageView def4;
 
     private FirebaseStorage mstorage;
     private StorageReference ref;
+    private Uri selectedImage;
 
     @Nullable
     @Override
@@ -83,11 +90,17 @@ public class SignupFragment extends Fragment implements SignupView {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        init(view.getContext());
+    }
+
+    private void init(Context context) {
+        Random random = new Random(System.currentTimeMillis());
+        urlAvatar = "def" + (1 + random.nextInt(4));
         mstorage = FirebaseStorage.getInstance();
-        ref = mstorage.getReference().child("avatars/"+ UUID.randomUUID().toString());
-        dialogAvatar = initDialogAvatar(view.getContext());
+        ref = mstorage.getReference().child("avatars/" + UUID.randomUUID().toString());
+        dialogAvatar = initDialogAvatar(context);
         presenter = new SignupPresenterImpl(this);
-        loading = new ProgressDialog(view.getContext());
+        loading = new ProgressDialog(context);
         loading.setMessage("Loading");
     }
 
@@ -95,7 +108,13 @@ public class SignupFragment extends Fragment implements SignupView {
     void onClick(View view) {
         switch (view.getId()) {
             case R.id.ok:
-                presenter.handlerClick();
+                if (urlAvatar.length() == 4) {
+                    loading.show();
+                    presenter.handlerClick();
+                } else {
+                    loading.show();
+                    uploadAvatar(selectedImage);
+                }
                 break;
             case R.id.change:
                 OnSelectedButtonListener listener = (OnSelectedButtonListener) getActivity();
@@ -107,15 +126,14 @@ public class SignupFragment extends Fragment implements SignupView {
         }
     }
 
-    private void uploadAvatar(Uri uri){
+    private void uploadAvatar(Uri uri) {
         ref.putFile(uri)
                 .addOnSuccessListener(taskSnapshot -> {
-                    // Get a URL to the uploaded content
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    urlAvatar = String.valueOf(taskSnapshot.getDownloadUrl());
+                    presenter.handlerClick();
                 })
                 .addOnFailureListener(exception -> {
-                    // Handle unsuccessful uploads
-                    // ...
+                    loading.dismiss();
                 });
     }
 
@@ -128,9 +146,15 @@ public class SignupFragment extends Fragment implements SignupView {
                 if (resultCode == getActivity().RESULT_OK) {
                     avatar.setImageURI(null);
                     storage.setImageURI(null);
-                    Uri selectedImage = data.getData();
+                    selectedImage = data.getData();
                     avatar.setImageURI(selectedImage);
                     storage.setImageURI(selectedImage);
+                    def1.setBorderWidth(0);
+                    def2.setBorderWidth(0);
+                    def3.setBorderWidth(0);
+                    def4.setBorderWidth(0);
+                    storage.setBorderWidth((int) getResources().getDimension(R.dimen.border));
+                    urlAvatar = "storage";
                 }
         }
     }
@@ -138,13 +162,13 @@ public class SignupFragment extends Fragment implements SignupView {
     private Dialog initDialogAvatar(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View view = getLayoutInflater().inflate(R.layout.dialog_avatar, null);
-        CircleImageView def1 = view.findViewById(R.id.def1);
+        def1 = view.findViewById(R.id.def1);
         def1.setBorderColor(getResources().getColor(R.color.colorBorderImg));
-        CircleImageView def2 = view.findViewById(R.id.def2);
+        def2 = view.findViewById(R.id.def2);
         def2.setBorderColor(getResources().getColor(R.color.colorBorderImg));
-        CircleImageView def3 = view.findViewById(R.id.def3);
+        def3 = view.findViewById(R.id.def3);
         def3.setBorderColor(getResources().getColor(R.color.colorBorderImg));
-        CircleImageView def4 = view.findViewById(R.id.def4);
+        def4 = view.findViewById(R.id.def4);
         def4.setBorderColor(getResources().getColor(R.color.colorBorderImg));
         storage = view.findViewById(R.id.storage);
         storage.setBorderColor(getResources().getColor(R.color.colorBorderImg));
@@ -156,6 +180,8 @@ public class SignupFragment extends Fragment implements SignupView {
             def4.setBorderWidth(0);
             storage.setBorderWidth(0);
             setAvatar(R.drawable.def1);
+            urlAvatar = "def1";
+            Log.d("TestTagSize", String.valueOf("def1".length()));
         });
 
         def2.setOnClickListener(v -> {
@@ -165,6 +191,7 @@ public class SignupFragment extends Fragment implements SignupView {
             def4.setBorderWidth(0);
             storage.setBorderWidth(0);
             setAvatar(R.drawable.def2);
+            urlAvatar = "def2";
         });
 
         def3.setOnClickListener(v -> {
@@ -174,6 +201,7 @@ public class SignupFragment extends Fragment implements SignupView {
             def4.setBorderWidth(0);
             storage.setBorderWidth(0);
             setAvatar(R.drawable.def3);
+            urlAvatar = "def3";
         });
 
         def4.setOnClickListener(v -> {
@@ -183,14 +211,10 @@ public class SignupFragment extends Fragment implements SignupView {
             def4.setBorderWidth((int) getResources().getDimension(R.dimen.border));
             storage.setBorderWidth(0);
             setAvatar(R.drawable.def4);
+            urlAvatar = "def4";
         });
 
         storage.setOnClickListener(v -> {
-            def1.setBorderWidth(0);
-            def2.setBorderWidth(0);
-            def3.setBorderWidth(0);
-            def4.setBorderWidth(0);
-            storage.setBorderWidth((int) getResources().getDimension(R.dimen.border));
             Intent intent = new Intent();
             intent.setType("image/jpeg");
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -232,6 +256,11 @@ public class SignupFragment extends Fragment implements SignupView {
     }
 
     @Override
+    public String getUrlAvatar() {
+        return urlAvatar;
+    }
+
+    @Override
     public void setupProfile() {
         Objects.requireNonNull(getActivity()).getPreferences(MODE_PRIVATE).edit()
                 .putBoolean(TAG_PREF, false)
@@ -256,11 +285,6 @@ public class SignupFragment extends Fragment implements SignupView {
     @Override
     public void showErrorConnect() {
         Toast.makeText(getContext(), "No connect!", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showProgressBar() {
-        loading.show();
     }
 
     @Override

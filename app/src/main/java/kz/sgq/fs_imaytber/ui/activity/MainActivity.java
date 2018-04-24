@@ -18,10 +18,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import kz.sgq.fs_imaytber.R;
 import kz.sgq.fs_imaytber.mvp.presenter.MainPresenterImpl;
 import kz.sgq.fs_imaytber.mvp.presenter.interfaces.MainPresenter;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private View headerNavigation;
     private TextView nick;
     private TextView login;
+    private CircleImageView avatar;
     private Dialog exit;
 
     private FriendFragment friendFragment;
@@ -62,11 +66,11 @@ public class MainActivity extends AppCompatActivity implements MainView {
         exit = initExitAccount();
     }
 
-    private void initFragments(){
+    private void initFragments() {
         friendFragment = new FriendFragment();
         settingsFragment = new SettingsFragment();
         if (getSharedPreferences("local", MODE_PRIVATE)
-                .getBoolean("main_fragment", true)){
+                .getBoolean("main_fragment", true)) {
             navigationView.getMenu().getItem(0).setChecked(true);
             Objects.requireNonNull(getSupportActionBar()).setTitle("Диалоги");
             stepFragments(settingsFragment);
@@ -89,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         headerNavigation = navigationView.getHeaderView(0);
         nick = headerNavigation.findViewById(R.id.nick);
         login = headerNavigation.findViewById(R.id.login);
+        avatar = headerNavigation.findViewById(R.id.avatar);
         presenter = new MainPresenterImpl(this);
     }
 
@@ -117,6 +122,33 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     @Override
+    public void setAvatar(String url) {
+        switch (url) {
+            case "def1":
+                avatar.setImageDrawable(getResources()
+                        .getDrawable(R.drawable.def1));
+                break;
+            case "def2":
+                avatar.setImageDrawable(getResources()
+                        .getDrawable(R.drawable.def2));
+                break;
+            case "def3":
+                avatar.setImageDrawable(getResources()
+                        .getDrawable(R.drawable.def3));
+                break;
+            case "def4":
+                avatar.setImageDrawable(getResources()
+                        .getDrawable(R.drawable.def4));
+                break;
+            default:
+                Picasso.get()
+                        .load(url)
+                        .into(avatar);
+                break;
+        }
+    }
+
+    @Override
     public void exitActivity() {
         getSharedPreferences("local", MODE_PRIVATE)
                 .edit()
@@ -133,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         navigationView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.message:
-                    if(!item.isChecked()) {
+                    if (!item.isChecked()) {
                         navigationView.getMenu().getItem(0).setChecked(true);
                         navigationView.getMenu().getItem(1).setChecked(false);
                         navigationView.getMenu().getItem(2).setChecked(false);
@@ -141,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                     }
                     break;
                 case R.id.friends:
-                    if(!item.isChecked()){
+                    if (!item.isChecked()) {
                         navigationView.getMenu().getItem(0).setChecked(false);
                         navigationView.getMenu().getItem(1).setChecked(true);
                         navigationView.getMenu().getItem(2).setChecked(false);
@@ -150,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                     }
                     break;
                 case R.id.settings:
-                    if(!item.isChecked()) {
+                    if (!item.isChecked()) {
                         navigationView.getMenu().getItem(0).setChecked(false);
                         navigationView.getMenu().getItem(1).setChecked(false);
                         navigationView.getMenu().getItem(2).setChecked(true);
@@ -167,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         });
     }
 
-    private void stepFragments(Fragment fragment){
+    private void stepFragments(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.content_frame, fragment);
