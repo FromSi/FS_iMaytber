@@ -17,4 +17,5 @@ public interface DialogModel {
     void setKey(String key);
     String getNick();
     String getAvatar();
+    void setIdChat(int id);
 }

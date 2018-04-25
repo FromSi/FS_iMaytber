@@ -2,6 +2,7 @@ package kz.sgq.fs_imaytber.ui.fragment;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,7 +26,9 @@ import kz.sgq.fs_imaytber.mvp.presenter.FriendPresenterImpl;
 import kz.sgq.fs_imaytber.mvp.presenter.interfaces.FriendPresenter;
 import kz.sgq.fs_imaytber.mvp.view.FriendView;
 import kz.sgq.fs_imaytber.room.table.TableUsers;
+import kz.sgq.fs_imaytber.ui.activity.DialogActivity;
 import kz.sgq.fs_imaytber.ui.adapters.FriendAdapter;
+import kz.sgq.fs_imaytber.util.interfaces.OnSelectedDialogClick;
 
 public class FriendFragment extends Fragment implements FriendView {
 
@@ -57,6 +60,7 @@ public class FriendFragment extends Fragment implements FriendView {
         loading.setMessage(getResources().getString(R.string.loading));
         addFriend = addFriendDialog();
         init();
+        onClickListenerAdapter();
         presenter = new FriendPresenterImpl(this);
     }
 
@@ -72,6 +76,10 @@ public class FriendFragment extends Fragment implements FriendView {
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new FriendAdapter();
         recyclerView.setAdapter(adapter);
+    }
+
+    private void onClickListenerAdapter() {
+        adapter.setOnSelectedDialogClick(idUser -> presenter.startDialog(idUser));
     }
 
     @Override
@@ -123,5 +131,13 @@ public class FriendFragment extends Fragment implements FriendView {
     @Override
     public void dismissProgressBar() {
         loading.dismiss();
+    }
+
+    @Override
+    public void startDialog(int idUser_1, int idUser_2) {
+        Intent intent = new Intent(getContext(), DialogActivity.class);
+        intent.putExtra("idUser_1", idUser_1);
+        intent.putExtra("idUser_2", idUser_2);
+        startActivity(intent);
     }
 }

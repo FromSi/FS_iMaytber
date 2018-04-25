@@ -162,4 +162,9 @@ public class DialogModelImpl implements DialogModel {
         return avatar;
     }
 
+    @Override
+    public void setIdChat(int id) {
+        idChat = id;
+    }
+
 }

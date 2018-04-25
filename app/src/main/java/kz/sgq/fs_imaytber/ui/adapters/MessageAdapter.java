@@ -35,11 +35,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         notifyDataSetChanged();
     }
 
-    public void addAllMessage(List<TableMessages> messagesList){
-        this.list = messagesList;
-        notifyDataSetChanged();
-    }
-
     @NonNull
     @Override
     public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

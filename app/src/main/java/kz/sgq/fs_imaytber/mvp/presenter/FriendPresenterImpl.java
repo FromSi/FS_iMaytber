@@ -158,8 +158,12 @@ public class FriendPresenterImpl implements FriendPresenter {
     }
 
     @Override
+    public void startDialog(int idUser_2) {
+        view.startDialog(model.getIdProfile(), idUser_2);
+    }
+
+    @Override
     public void onDestroy() {
-        Log.d("ExitAndDestroy", this.getClass().getName());
         composite.clear();
         view = null;
         model = null;
