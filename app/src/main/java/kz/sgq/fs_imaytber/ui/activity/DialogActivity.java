@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import java.util.List;
@@ -38,10 +39,23 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
         setContentView(R.layout.activity_dialog);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
         presenter = new DialogPresenterImpl(this,
                 getIntent().getIntExtra("idUser_1", 0),
                 getIntent().getIntExtra("idUser_2", 0));
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @OnClick(R.id.send)
@@ -51,6 +65,7 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
 
     private void init() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new MessageAdapter();

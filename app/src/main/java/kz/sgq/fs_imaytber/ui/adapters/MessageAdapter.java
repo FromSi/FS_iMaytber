@@ -38,7 +38,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @NonNull
     @Override
     public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dialog, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_message, parent, false);
         return new ViewHolder(view);
     }
 
@@ -59,8 +59,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.content)
         TextView content;
-        @BindView(R.id.time)
-        TextView time;
         @BindView(R.id.l_content)
         LinearLayout l_content;
         @BindView(R.id.item)

@@ -60,11 +60,11 @@ public class GsonToTable {
         return list;
     }
 
-    public static TableMessages tableMessages(POSTMessage message) {
+    public static TableMessages tableMessages(POSTMessage message, String key) {
         return new TableMessages(Integer.parseInt(message.getIdmessage()),
                 Integer.parseInt(message.getIdchat()),
                 Integer.parseInt(message.getIduser()),
-                message.getContent());
+                new FS_RC4(key, message.getContent()).start());
     }
 
     public static TableProfile tableProfile(GETLogin login) {

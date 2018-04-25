@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import kz.sgq.fs_imaytber.room.table.TableChats;
 
@@ -21,11 +22,11 @@ public interface DaoChats {
     @Query("SELECT * FROM `tablechats`")
     Flowable<List<TableChats>> getChats();
 
-    @Query("SELECT `key` FROM `tablechats` WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
-    Observable<String> getChatKey(int idUser);
+    @Query("SELECT * FROM `tablechats` WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
+    Maybe<TableChats> getChatKey(int idUser);
 
-    @Query("SELECT `idchats` FROM `tablechats` WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
-    Observable<Integer> getIdChat(int idUser);
+    @Query("SELECT * FROM `tablechats` WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
+    Maybe<TableChats> getIdChat(int idUser);
 
     @Query("UPDATE `tablechats` SET `key`=:key WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
     void putKey(String key, int idUser);

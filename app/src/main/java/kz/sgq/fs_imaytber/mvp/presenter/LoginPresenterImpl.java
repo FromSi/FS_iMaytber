@@ -12,6 +12,8 @@ import kz.sgq.fs_imaytber.mvp.model.LoginModelImpl;
 import kz.sgq.fs_imaytber.mvp.model.interfaces.LoginModel;
 import kz.sgq.fs_imaytber.mvp.presenter.interfaces.LoginPresenter;
 import kz.sgq.fs_imaytber.mvp.view.LoginView;
+import kz.sgq.fs_imaytber.room.table.TableMessages;
+import kz.sgq.fs_imaytber.util.FS_RC4;
 import kz.sgq.fs_imaytber.util.GsonToTable;
 import kz.sgq.fs_imaytber.util.LoginZIP;
 
@@ -61,10 +63,10 @@ public class LoginPresenterImpl implements LoginPresenter {
         }
     }
 
-    private void handlerREST(int iduser) {
-        Observable.zip(model.getSocket().getChats(iduser),
-                model.getSocket().getFriend(iduser),
-                model.getSocket().getMessage(iduser),
+    private void handlerREST(int idUser) {
+        Observable.zip(model.getSocket().getChats(idUser),
+                model.getSocket().getFriend(idUser),
+                model.getSocket().getMessage(idUser),
                 (chatsList, friendList, messageList) -> new LoginZIP(GsonToTable.tableChats(chatsList),
                         GsonToTable.tableMessages(messageList),
                         GsonToTable.tableFriends(friendList)))
@@ -74,8 +76,22 @@ public class LoginPresenterImpl implements LoginPresenter {
                     @Override
                     public void onNext(LoginZIP loginZIP) {
                         model.getLocal().insertChats(loginZIP.getChats());
-                        model.getLocal().insertMessage(loginZIP.getMessages());
                         model.getLocal().insertFriends(loginZIP.getFriends());
+
+                        for (int i = 0; i < loginZIP.getMessages().size(); i++) {
+                            for (int j = 0; j < loginZIP.getChats().size(); j++) {
+                                if (loginZIP.getChats().get(j).getIdchats() ==
+                                        loginZIP.getMessages().get(i).getIdchats())
+                                    model.getLocal()
+                                            .insertMessage(new TableMessages(loginZIP.getMessages().get(i).getIdmessages(),
+                                                    loginZIP.getMessages().get(i).getIdchats(),
+                                                    loginZIP.getMessages().get(i).getIduser(),
+                                                    new FS_RC4(loginZIP.getChats().get(j).getKey(),
+                                                            loginZIP.getMessages().get(i).getContent())
+                                                            .start()));
+                            }
+                        }
+
                     }
 
                     @Override
@@ -94,7 +110,6 @@ public class LoginPresenterImpl implements LoginPresenter {
 
     @Override
     public void onDestroy() {
-        Log.d("ExitAndDestroy", this.getClass().getName());
         view = null;
         model = null;
     }

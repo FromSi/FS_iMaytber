@@ -18,4 +18,6 @@ public interface DialogModel {
     String getNick();
     String getAvatar();
     void setIdChat(int id);
+    void setNick(String nick);
+    void setAvatar(String avatar);
 }

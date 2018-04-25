@@ -165,14 +165,14 @@ public class LocalDB {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<Integer> getIdChat(int idUser){
+    public Maybe<TableChats> getIdChat(int idUser){
         return database.chats()
                 .getIdChat(idUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<String> getChatKey(int idUser){
+    public Maybe<TableChats> getChatKey(int idUser){
         return database.chats()
                 .getChatKey(idUser)
                 .subscribeOn(Schedulers.io())

@@ -1,11 +1,13 @@
 package kz.sgq.fs_imaytber.mvp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.MaybeObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import kz.sgq.fs_imaytber.mvp.model.interfaces.DialogModel;
+import kz.sgq.fs_imaytber.room.table.TableChats;
 import kz.sgq.fs_imaytber.room.table.TableUsers;
 import kz.sgq.fs_imaytber.util.LocalDB;
 import kz.sgq.fs_imaytber.util.SocketIMaytber;
@@ -26,73 +28,21 @@ public class DialogModelImpl implements DialogModel {
         socket = new SocketIMaytber();
         this.idUser_1 = idUser_1;
         this.idUser_2 = idUser_2;
-        initAvatarAndNick();
-        initIdChat();
+        idMessageList = new ArrayList<>();
         initKey();
-    }
-
-    private void initAvatarAndNick(){
-        localDB.getUser(idUser_2)
-                .subscribe(new MaybeObserver<TableUsers>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(TableUsers tableUsers) {
-                        nick = tableUsers.getNick();
-                        avatar = tableUsers.getAvatar();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-    }
-
-    private void initIdChat(){
-        localDB.getIdChat(idUser_2)
-                .subscribe(new Observer<Integer>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Integer integer) {
-                        idChat = integer;
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
     }
 
     private void initKey(){
         localDB.getChatKey(idUser_2)
-                .subscribe(new Observer<String>() {
+                .subscribe(new MaybeObserver<TableChats>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(String s) {
-                        key = s;
+                    public void onSuccess(TableChats chats) {
+                        key = chats.getKey();
                     }
 
                     @Override
@@ -165,6 +115,16 @@ public class DialogModelImpl implements DialogModel {
     @Override
     public void setIdChat(int id) {
         idChat = id;
+    }
+
+    @Override
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
+    @Override
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
 }
