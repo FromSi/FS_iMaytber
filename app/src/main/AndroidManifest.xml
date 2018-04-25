@@ -12,14 +12,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.BaseActivity">
+        <activity
+            android:name=".ui.activity.BaseActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.LoginActivity" />
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name=".infraestructure.services.FS_FirebaseMessagingService">
             <intent-filter>
@@ -32,7 +39,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ui.activity.MainActivity"></activity>
+        <activity android:name=".ui.activity.DialogActivity"></activity>
     </application>
 
 </manifest>

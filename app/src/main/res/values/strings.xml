@@ -19,4 +19,5 @@
     <string name="snacbar_success_settings">Настройки сохранены</string>
     <string name="snacbar_error_settings">Ошибка при сохранении</string>
     <string name="snacbar_error_upload_image">Ошибка загрузки изображения</string>
+    <string name="hint_text">Напишите текст</string>
 </resources>

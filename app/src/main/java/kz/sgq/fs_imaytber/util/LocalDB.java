@@ -5,6 +5,7 @@ import java.util.List;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import kz.sgq.fs_imaytber.application.App;
@@ -113,6 +114,12 @@ public class LocalDB {
                 .subscribe();
     }
 
+    public void updateKey(String key, int idUser){
+        Completable.fromAction(() -> database.chats().putKey(key, idUser))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
     public void updateNick(String nick){
         Completable.fromAction(() -> database.profile().putNick(nick))
                 .subscribeOn(Schedulers.io())
@@ -151,22 +158,36 @@ public class LocalDB {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Maybe<TableUsers> getUser(int idusers){
+    public Maybe<TableUsers> getUser(int idUser){
         return database.users()
-                .getUser(idusers)
+                .getUser(idUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Flowable<List<TableMessages>> getMessages(int idchat){
-        return database.message()
-                .getMessages(idchat)
+    public Observable<Integer> getIdChat(int idUser){
+        return database.chats()
+                .getIdChat(idUser)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Maybe<List<TableMessages>> getDialogs(int idchat){
+    public Observable<String> getChatKey(int idUser){
+        return database.chats()
+                .getChatKey(idUser)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Flowable<List<TableMessages>> getMessages(int idChat){
         return database.message()
-                .getDialogs(idchat)
+                .getMessages(idChat)
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Maybe<List<TableMessages>> getDialogs(int idChat){
+        return database.message()
+                .getDialogs(idChat)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
