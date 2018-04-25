@@ -1,7 +1,6 @@
 package kz.sgq.fs_imaytber.ui.activity;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -13,9 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -36,10 +33,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
-
     @BindView(R.id.drawerLayout)
     DrawerLayout drawerLayout;
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -208,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements MainView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("ExitAndDestroy", this.getClass().getName());
         presenter.onDestroy();
     }
 }

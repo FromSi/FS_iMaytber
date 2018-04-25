@@ -6,4 +6,17 @@
     <string name="ok">ok</string>
     <string name="exit">Вы точно хотите выйти из аккаунта?</string>
     <string name="id_user">#</string>
+    <string name="loading">Загрузка</string>
+    <string name="repeat">Повторить</string>
+    <string name="error_nick">Вы ввели мало символов</string>
+    <string name="error_login">Вы ввели мало символов</string>
+    <string name="error_password">Вы ввели слабый пароль</string>
+
+    <string name="snacbar_">Загрузка</string>
+    <string name="snacbar_add_friend">Ошибка при добавлении</string>
+    <string name="snacbar_error_connect">Ошибка входа</string>
+    <string name="snacbar_error_create">Ошибка регистрации</string>
+    <string name="snacbar_success_settings">Настройки сохранены</string>
+    <string name="snacbar_error_settings">Ошибка при сохранении</string>
+    <string name="snacbar_error_upload_image">Ошибка загрузки изображения</string>
 </resources>

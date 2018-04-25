@@ -6,4 +6,6 @@ public interface SettingsView {
     void setPassword();
     void setAvatar(String uri);
     String getUrlAvatar();
+    void showSuccess();
+    void showError();
 }

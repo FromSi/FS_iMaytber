@@ -8,7 +8,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="colorButtonNormal">@color/colorButton</item>
-        <item name="android:textColor">@color/primary_text</item>
     </style>
 
 </resources>

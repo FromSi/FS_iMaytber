@@ -147,6 +147,7 @@ public class FriendPresenterImpl implements FriendPresenter {
                     @Override
                     public void onError(Throwable e) {
                         view.dismissProgressBar();
+                        view.showErrorAddFriend();
                     }
 
                     @Override

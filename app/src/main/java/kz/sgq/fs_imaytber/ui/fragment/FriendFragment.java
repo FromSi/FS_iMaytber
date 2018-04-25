@@ -2,21 +2,18 @@ package kz.sgq.fs_imaytber.ui.fragment;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -41,11 +38,14 @@ public class FriendFragment extends Fragment implements FriendView {
     private ProgressDialog loading;
 
     private FriendPresenter presenter;
+    private View view;
+
+    private String textAddFriend;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_friends, container, false);
+        view = inflater.inflate(R.layout.fragment_friends, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -54,9 +54,9 @@ public class FriendFragment extends Fragment implements FriendView {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loading = new ProgressDialog(view.getContext());
-        loading.setMessage("Loading");
-        addFriend = addFriendDialog(getContext());
-        init(view.getContext());
+        loading.setMessage(getResources().getString(R.string.loading));
+        addFriend = addFriendDialog();
+        init();
         presenter = new FriendPresenterImpl(this);
     }
 
@@ -66,8 +66,8 @@ public class FriendFragment extends Fragment implements FriendView {
     }
 
 
-    private void init(Context context) {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+    private void init() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new FriendAdapter();
@@ -77,7 +77,6 @@ public class FriendFragment extends Fragment implements FriendView {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("ExitAndDestroy", this.getClass().getName());
         presenter.onDestroy();
     }
 
@@ -88,7 +87,9 @@ public class FriendFragment extends Fragment implements FriendView {
 
     @Override
     public void showErrorAddFriend() {
-
+        Snackbar.make(view, getResources().getString(R.string.snacbar_add_friend), Snackbar.LENGTH_LONG)
+                .setAction(getResources().getString(R.string.repeat), v -> handlerAddFriend())
+                .show();
     }
 
     @Override
@@ -96,22 +97,27 @@ public class FriendFragment extends Fragment implements FriendView {
         return adapter.getIdUser();
     }
 
-    private Dialog addFriendDialog(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    private Dialog addFriendDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         View view = getLayoutInflater().inflate(R.layout.dialog_add_friend, null);
         EditText text = view.findViewById(R.id.idUser);
         builder.setView(view)
                 .setPositiveButton(R.string.ok, (dialog, id) -> {
                     if (!text.getText().toString().isEmpty() &&
                             Integer.parseInt(text.getText().toString()) >= 1) {
-                        loading.show();
-                        presenter.addFriend(Integer.parseInt(text.getText().toString()));
+                        textAddFriend = text.getText().toString();
+                        handlerAddFriend();
                         text.setText("");
                     }
                 })
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {
                 });
         return builder.create();
+    }
+
+    private void handlerAddFriend() {
+        loading.show();
+        presenter.addFriend(Integer.parseInt(textAddFriend));
     }
 
     @Override

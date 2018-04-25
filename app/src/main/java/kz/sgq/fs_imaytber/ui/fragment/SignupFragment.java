@@ -4,15 +4,12 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -21,17 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -53,13 +43,10 @@ public class SignupFragment extends Fragment implements SignupView {
 
     @BindView(R.id.nick)
     EditText nick;
-
     @BindView(R.id.login)
     EditText login;
-
     @BindView(R.id.password)
     EditText password;
-
     @BindView(R.id.avatar)
     ImageView avatar;
 
@@ -77,11 +64,12 @@ public class SignupFragment extends Fragment implements SignupView {
 
     private StorageReference ref;
     private Uri selectedImage;
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_signup, container, false);
+        view = inflater.inflate(R.layout.fragment_signup, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -89,18 +77,18 @@ public class SignupFragment extends Fragment implements SignupView {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        init(view.getContext());
+        init();
     }
 
-    private void init(Context context) {
+    private void init() {
         Random random = new Random(System.currentTimeMillis());
         urlAvatar = "def" + (1 + random.nextInt(4));
         ref = FirebaseStorage.getInstance().getReference()
                 .child("avatars/" + UUID.randomUUID().toString());
-        dialogAvatar = initDialogAvatar(context);
+        dialogAvatar = initDialogAvatar(view.getContext());
         presenter = new SignupPresenterImpl(this);
-        loading = new ProgressDialog(context);
-        loading.setMessage("Loading");
+        loading = new ProgressDialog(view.getContext());
+        loading.setMessage(getResources().getString(R.string.loading));
     }
 
     @OnClick({R.id.ok, R.id.change, R.id.avatar})
@@ -133,13 +121,13 @@ public class SignupFragment extends Fragment implements SignupView {
                 })
                 .addOnFailureListener(exception -> {
                     loading.dismiss();
+                    Snackbar.make(view, getResources().getString(R.string.snacbar_error_upload_image), Snackbar.LENGTH_LONG).show();
                 });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Bitmap bitmap = null;
         switch (requestCode) {
             case 1:
                 if (resultCode == getActivity().RESULT_OK) {
@@ -248,10 +236,8 @@ public class SignupFragment extends Fragment implements SignupView {
 
     @Override
     public String getToken() {
-        String str = PreferenceManager.getDefaultSharedPreferences(getContext())
+        return PreferenceManager.getDefaultSharedPreferences(getContext())
                 .getString("token", "1010101");
-        Log.d("TagTest", str);
-        return str;
     }
 
     @Override
@@ -268,22 +254,23 @@ public class SignupFragment extends Fragment implements SignupView {
 
     @Override
     public void showErrorNick() {
-        nick.setError("Error");
+        nick.setError(getResources().getString(R.string.error_nick));
     }
 
     @Override
     public void showErrorLogin() {
-        login.setError("Error");
+        login.setError(getResources().getString(R.string.error_login));
     }
 
     @Override
     public void showErrorPassword() {
-        password.setError("Error");
+        password.setError(getResources().getString(R.string.error_password));
     }
 
     @Override
     public void showErrorConnect() {
-        Toast.makeText(getContext(), "No connect!", Toast.LENGTH_SHORT).show();
+        Snackbar.make(view, getResources().getString(R.string.snacbar_error_create),
+                Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -307,7 +294,6 @@ public class SignupFragment extends Fragment implements SignupView {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("ExitAndDestroy", this.getClass().getName());
         presenter.onDestroy();
     }
 }

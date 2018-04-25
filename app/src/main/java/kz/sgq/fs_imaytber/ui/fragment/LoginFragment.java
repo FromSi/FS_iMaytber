@@ -2,17 +2,15 @@ package kz.sgq.fs_imaytber.ui.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -32,18 +30,18 @@ public class LoginFragment extends Fragment implements LoginView {
 
     @BindView(R.id.login)
     EditText login;
-
     @BindView(R.id.password)
     EditText password;
 
-    private final String TAG_PREF = "profile";
     private ProgressDialog loading;
     private LoginPresenter presenter;
+
+    private View view;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -82,23 +80,23 @@ public class LoginFragment extends Fragment implements LoginView {
     @Override
     public void setupProfile() {
         Objects.requireNonNull(getActivity()).getPreferences(MODE_PRIVATE).edit()
-                .putBoolean(TAG_PREF, false)
+                .putBoolean("profile", false)
                 .apply();
     }
 
     @Override
     public void showErrorLogin() {
-        login.setError("Error");
+        login.setError(getResources().getString(R.string.error_login));
     }
 
     @Override
     public void showErrorPassword() {
-        password.setError("Error");
+        password.setError(getResources().getString(R.string.error_password));
     }
 
     @Override
     public void showErrorConnect() {
-        Toast.makeText(getContext(), "No connect!", Toast.LENGTH_SHORT).show();
+        Snackbar.make(view, getResources().getString(R.string.snacbar_error_connect), Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -117,7 +115,6 @@ public class LoginFragment extends Fragment implements LoginView {
                 .edit()
                 .putBoolean("profile", true)
                 .apply();
-
         Intent intent = new Intent(getContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -127,7 +124,6 @@ public class LoginFragment extends Fragment implements LoginView {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("ExitAndDestroy", this.getClass().getName());
         presenter.onDestroy();
     }
 }

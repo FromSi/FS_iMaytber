@@ -146,11 +146,12 @@ public class SettingsPresenterImpl implements SettingsPresenter {
                     public void onComplete() {
                         model.getLocal()
                                 .updateAvatar(url);
+                        view.showSuccess();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        view.showError();
                     }
                 });
     }

@@ -46,6 +46,4 @@ public class LoginActivity extends AppCompatActivity implements OnSelectedButton
     public void onClickSignup() {
         viewPager.setCurrentItem(0);
     }
-
-
 }
