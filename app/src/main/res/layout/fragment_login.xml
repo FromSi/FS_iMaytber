@@ -31,6 +31,7 @@
                         android:id="@+id/login"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:digits="abcdefghijklmnopqrstuvwxyz0123456789"
                         android:hint="login"
                         android:maxLength="16" />
                 </android.support.design.widget.TextInputLayout>
@@ -43,7 +44,9 @@
                     <android.support.design.widget.TextInputEditText
                         android:id="@+id/password"
                         android:layout_width="match_parent"
+                        android:inputType="textPassword"
                         android:layout_height="wrap_content"
+                        android:digits="abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                         android:hint="password"
                         android:maxLength="40" />
                 </android.support.design.widget.TextInputLayout>

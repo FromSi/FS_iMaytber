@@ -72,6 +72,7 @@ public class FriendFragment extends Fragment implements FriendView {
 
     private void init() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new FriendAdapter();

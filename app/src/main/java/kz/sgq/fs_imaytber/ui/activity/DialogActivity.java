@@ -7,6 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -28,6 +32,10 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
     Toolbar toolbar;
     @BindView(R.id.text)
     EditText text;
+    @BindView(R.id.title)
+    TextView title;
+    @BindView(R.id.avatar)
+    ImageView avatar;
 
     private MessageAdapter adapter;
     private DialogPresenter presenter;
@@ -39,6 +47,7 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
         setContentView(R.layout.activity_dialog);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
         presenter = new DialogPresenterImpl(this,
@@ -101,12 +110,34 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
 
     @Override
     public void setToolBar(String nick) {
-        getSupportActionBar().setTitle(nick);
+        title.setText(nick);
     }
 
     @Override
     public void setAvatar(String avatar) {
-
+        switch (avatar) {
+            case "def1":
+                this.avatar.setImageDrawable(getResources()
+                        .getDrawable(R.drawable.def1));
+                break;
+            case "def2":
+                this.avatar.setImageDrawable(getResources()
+                        .getDrawable(R.drawable.def2));
+                break;
+            case "def3":
+                this.avatar.setImageDrawable(getResources()
+                        .getDrawable(R.drawable.def3));
+                break;
+            case "def4":
+                this.avatar.setImageDrawable(getResources()
+                        .getDrawable(R.drawable.def4));
+                break;
+            default:
+                Picasso.get()
+                        .load(avatar)
+                        .into(this.avatar);
+                break;
+        }
     }
 
     @Override

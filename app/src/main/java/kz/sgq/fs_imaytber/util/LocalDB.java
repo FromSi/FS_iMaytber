@@ -165,9 +165,23 @@ public class LocalDB {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Maybe<TableChats> getIdChat(int idUser){
+//    public Maybe<List<TableUsers>> getUsers(List<Integer> list){
+//        return database.users()
+//                .getUsers(list)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
+//    }
+
+    public Maybe<TableMessages> getDialog(int id){
+        return database.message()
+                .getDialog(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Maybe<TableChats> getIdChat(int idChat){
         return database.chats()
-                .getIdChat(idUser)
+                .getIdChat(idChat)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

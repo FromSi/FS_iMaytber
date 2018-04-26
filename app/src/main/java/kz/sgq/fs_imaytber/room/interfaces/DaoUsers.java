@@ -20,6 +20,9 @@ public interface DaoUsers {
     @Query("SELECT * FROM `tableusers` WHERE `idusers`=:idusers")
     Maybe<TableUsers> getUser(int idusers);
 
+//    @Query("SELECT * FROM `tableusers` WHERE `idusers`=:list")
+//    Maybe<List<TableUsers>> getUsers(List<Integer> list);
+
     @Query("DELETE FROM `tableusers`")
     void delete();
 }

@@ -27,6 +27,7 @@ import kz.sgq.fs_imaytber.mvp.presenter.MainPresenterImpl;
 import kz.sgq.fs_imaytber.mvp.presenter.interfaces.MainPresenter;
 import kz.sgq.fs_imaytber.mvp.view.MainView;
 import kz.sgq.fs_imaytber.ui.fragment.FriendFragment;
+import kz.sgq.fs_imaytber.ui.fragment.HistoryFragment;
 import kz.sgq.fs_imaytber.ui.fragment.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity implements MainView {
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private CircleImageView avatar;
     private Dialog exit;
 
+    private HistoryFragment historyFragment;
     private FriendFragment friendFragment;
     private SettingsFragment settingsFragment;
 
@@ -63,13 +65,14 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     private void initFragments() {
+        historyFragment = new HistoryFragment();
         friendFragment = new FriendFragment();
         settingsFragment = new SettingsFragment();
         if (getSharedPreferences("local", MODE_PRIVATE)
                 .getBoolean("main_fragment", true)) {
             navigationView.getMenu().getItem(0).setChecked(true);
             Objects.requireNonNull(getSupportActionBar()).setTitle("Диалоги");
-            stepFragments(settingsFragment);
+            stepFragments(historyFragment);
         } else {
             navigationView.getMenu().getItem(1).setChecked(true);
             Objects.requireNonNull(getSupportActionBar()).setTitle("Друзья");
@@ -163,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                         navigationView.getMenu().getItem(1).setChecked(false);
                         navigationView.getMenu().getItem(2).setChecked(false);
                         Objects.requireNonNull(getSupportActionBar()).setTitle("Диалоги");
+                        stepFragments(historyFragment);
                     }
                     break;
                 case R.id.friends:
