@@ -5,4 +5,5 @@ public interface MainView {
     void setLogin(String login);
     void setAvatar(String url);
     void exitActivity();
+    void showErrorExit();
 }

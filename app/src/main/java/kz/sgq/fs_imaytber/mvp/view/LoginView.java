@@ -3,7 +3,7 @@ package kz.sgq.fs_imaytber.mvp.view;
 public interface LoginView {
     String getLogin();
     String getPassword();
-    void setupProfile();
+    String getToken();
     void showErrorLogin();
     void showErrorPassword();
     void showErrorConnect();

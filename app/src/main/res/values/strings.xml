@@ -11,6 +11,7 @@
     <string name="error_nick">Вы ввели мало символов</string>
     <string name="error_login">Вы ввели мало символов</string>
     <string name="error_password">Вы ввели слабый пароль</string>
+    <string name="error_exit">Экстренный выход</string>
 
     <string name="snacbar_">Загрузка</string>
     <string name="snacbar_add_friend">Ошибка при добавлении</string>

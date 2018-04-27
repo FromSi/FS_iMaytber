@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import kz.sgq.fs_imaytber.mvp.presenter.interfaces.DialogPresenter;
 import kz.sgq.fs_imaytber.mvp.view.DialogView;
 import kz.sgq.fs_imaytber.room.table.TableMessages;
 import kz.sgq.fs_imaytber.ui.adapters.MessageAdapter;
+import kz.sgq.fs_imaytber.ui.adapters.StikerAdapter;
 
 public class DialogActivity extends AppCompatActivity implements DialogView {
 
@@ -36,8 +38,11 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
     TextView title;
     @BindView(R.id.avatar)
     ImageView avatar;
+    @BindView(R.id.stiker)
+    RecyclerView stiker;
 
     private MessageAdapter adapter;
+    private StikerAdapter stikerAdapter;
     private DialogPresenter presenter;
 
 
@@ -50,6 +55,7 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
+        initStikers();
         presenter = new DialogPresenterImpl(this,
                 getIntent().getIntExtra("idUser_1", 0),
                 getIntent().getIntExtra("idUser_2", 0));
@@ -72,6 +78,14 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
         presenter.handlerMessage();
     }
 
+    @OnClick(R.id.b_stiker)
+    public void onClickStiker(){
+        if (stiker.getVisibility() == View.VISIBLE)
+            stiker.setVisibility(View.GONE);
+        else
+            stiker.setVisibility(View.VISIBLE);
+    }
+
     private void init() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
@@ -79,6 +93,14 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new MessageAdapter();
         recyclerView.setAdapter(adapter);
+    }
+
+    private void initStikers(){
+        LinearLayoutManager horizontalLayoutManagaer = new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false);
+        stiker.setLayoutManager(horizontalLayoutManagaer);
+        stikerAdapter = new StikerAdapter();
+        stiker.setAdapter(stikerAdapter);
     }
 
     @Override

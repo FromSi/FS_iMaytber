@@ -6,5 +6,8 @@ import kz.sgq.fs_imaytber.util.HistoryZIP;
 
 public interface HistoryView {
     void addHistory(HistoryZIP message);
+
     void clearHistory();
+
+    void startDialog(int idUser_1, int idUser_2);
 }

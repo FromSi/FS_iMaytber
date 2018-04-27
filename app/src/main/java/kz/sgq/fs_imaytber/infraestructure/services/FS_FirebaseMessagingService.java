@@ -1,5 +1,7 @@
 package kz.sgq.fs_imaytber.infraestructure.services;
 
+import android.util.Log;
+
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -12,7 +14,6 @@ import kz.sgq.fs_imaytber.util.FS_RC4;
 import kz.sgq.fs_imaytber.util.LocalDB;
 
 public class FS_FirebaseMessagingService extends FirebaseMessagingService {
-    private boolean bool = true;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getData().size() > 0) {
@@ -36,30 +37,27 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
 
                         @Override
                         public void onSuccess(TableChats chats) {
-
-                            bool = false;
+                            Log.d("TestTagMy", "onSuccess");
+                            localDB.insertMessage(new TableMessages(idmessages, idchats,
+                                    iduser, new FS_RC4(key, content).start()));
                         }
 
                         @Override
                         public void onError(Throwable e) {
+                            Log.d("TestTagMy", "onError");
 
                         }
 
                         @Override
                         public void onComplete() {
+                            Log.d("TestTagMy", "onComplete");
+                            localDB.insertMessage(new TableMessages(idmessages, idchats,
+                                    iduser, new FS_RC4(key, content).start()));
+                            localDB.insertChats(new TableChats(idchats, iduser_1,
+                                    iduser_2, key));
 
                         }
                     });
-
-            if (bool){
-                localDB.insertMessage(new TableMessages(idmessages, idchats,
-                        iduser, new FS_RC4(key, content).start()));
-                localDB.insertChats(new TableChats(idchats, iduser_1,
-                        iduser_2, key));
-            }else {
-                localDB.insertMessage(new TableMessages(idmessages, idchats,
-                        iduser, new FS_RC4(key, content).start()));
-            }
         }
     }
 }

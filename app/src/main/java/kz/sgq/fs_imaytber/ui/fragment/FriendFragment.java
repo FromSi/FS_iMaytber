@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import kz.sgq.fs_imaytber.R;
 import kz.sgq.fs_imaytber.mvp.presenter.FriendPresenterImpl;
+import kz.sgq.fs_imaytber.mvp.presenter.HistoryPresenterImpl;
 import kz.sgq.fs_imaytber.mvp.presenter.interfaces.FriendPresenter;
 import kz.sgq.fs_imaytber.mvp.view.FriendView;
 import kz.sgq.fs_imaytber.room.table.TableUsers;
@@ -61,7 +63,6 @@ public class FriendFragment extends Fragment implements FriendView {
         addFriend = addFriendDialog();
         init();
         onClickListenerAdapter();
-        presenter = new FriendPresenterImpl(this);
     }
 
     @OnClick(R.id.fab)
@@ -69,6 +70,12 @@ public class FriendFragment extends Fragment implements FriendView {
         addFriend.show();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter = new FriendPresenterImpl(this);
+        Log.d("onCreateView123","onStart");
+    }
 
     private void init() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -86,6 +93,12 @@ public class FriendFragment extends Fragment implements FriendView {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         presenter.onDestroy();
     }
 

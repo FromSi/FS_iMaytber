@@ -15,6 +15,8 @@ public class HistoryModelImpl implements HistoryModel {
 
     public HistoryModelImpl() {
         localDB = new LocalDB();
+        idListUser_2 = new ArrayList<>();
+        idChat = new ArrayList<>();
     }
 
     @Override
@@ -39,12 +41,12 @@ public class HistoryModelImpl implements HistoryModel {
 
     @Override
     public void clearListIdUser_2() {
-        idListUser_2 = new ArrayList<>();
+        idListUser_2.clear();
     }
 
     @Override
     public void clearListIdChat() {
-        idChat = new ArrayList<>();
+        idChat.clear();
     }
 
 

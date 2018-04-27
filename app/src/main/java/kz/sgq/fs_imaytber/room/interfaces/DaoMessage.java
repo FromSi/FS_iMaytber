@@ -21,6 +21,9 @@ public interface DaoMessage {
     @Query("SELECT * FROM `tablemessages` WHERE `idchats`=:idchat")
     Flowable<List<TableMessages>> getMessages(int idchat);
 
+    @Query("SELECT * FROM `tablemessages` ORDER BY `idmessages` DESC LIMIT 1")
+    Flowable<TableMessages> getMessage();
+
     @Query("SELECT * FROM `tablemessages` WHERE `idchats`=:idchat ORDER BY `idmessages` DESC LIMIT 1")
     Maybe<List<TableMessages>> getDialogs(int idchat);
 

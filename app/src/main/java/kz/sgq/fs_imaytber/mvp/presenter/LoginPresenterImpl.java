@@ -42,6 +42,7 @@ public class LoginPresenterImpl implements LoginPresenter {
                             model.getLocal()
                                     .insertProfile(GsonToTable.tableProfile(login));
                             handlerREST(Integer.parseInt(login.getIduser()));
+                            handlerToken(Integer.parseInt(login.getIduser()));
                         }
 
                         @Override
@@ -61,6 +62,12 @@ public class LoginPresenterImpl implements LoginPresenter {
             if (!password)
                 view.showErrorPassword();
         }
+    }
+
+    private void handlerToken(int idUser){
+        model.getSocket()
+                .putToken(idUser, view.getToken())
+                .subscribe();
     }
 
     private void handlerREST(int idUser) {

@@ -2,7 +2,9 @@ package kz.sgq.fs_imaytber.mvp.presenter;
 
 import android.util.Log;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.subscribers.DisposableSubscriber;
 import kz.sgq.fs_imaytber.mvp.model.MainModelImpl;
 import kz.sgq.fs_imaytber.mvp.model.interfaces.MainModel;
@@ -24,8 +26,28 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void exitActivity() {
-        model.getLocal().deleteAll();
-        view.exitActivity();
+        model.getSocket()
+                .putToken(model.getIdUser(),
+                        "no token")
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        model.getLocal().deleteAll();
+                        view.exitActivity();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        model.getLocal().deleteAll();
+                        view.exitActivity();
+                        view.showErrorExit();
+                    }
+                });
     }
 
     @Override
@@ -44,6 +66,7 @@ public class MainPresenterImpl implements MainPresenter {
                             @Override
                             public void onNext(TableProfile profile) {
                                 Log.d("testNull", profile.getNick());
+                                model.setIdUser(profile.getIduser());
                                 view.setNick(profile.getNick());
                                 view.setLogin(profile.getLogin() + "#" + profile.getIduser());
                                 view.setAvatar(profile.getAvatar());

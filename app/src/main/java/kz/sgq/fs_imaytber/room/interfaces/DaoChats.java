@@ -20,13 +20,13 @@ public interface DaoChats {
     void insertAll(List<TableChats> chatsList);
 
     @Query("SELECT * FROM `tablechats`")
-    Flowable<List<TableChats>> getChats();
+    Maybe<List<TableChats>> getChats();
 
     @Query("SELECT * FROM `tablechats` WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
     Maybe<TableChats> getChatKey(int idUser);
 
-    @Query("SELECT * FROM `tablechats` WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
-    Maybe<TableChats> getIdChat(int idUser);
+    @Query("SELECT * FROM `tablechats` WHERE `idchats`=:idChat")
+    Maybe<TableChats> getIdChat(int idChat);
 
     @Query("UPDATE `tablechats` SET `key`=:key WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
     void putKey(String key, int idUser);

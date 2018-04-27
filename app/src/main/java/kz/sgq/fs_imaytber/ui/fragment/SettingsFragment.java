@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,11 +84,17 @@ public class SettingsFragment extends Fragment implements SettingsView {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter = new SettingsPresenterImpl(this);
         preferences = Objects.requireNonNull(getContext())
                 .getSharedPreferences("local", Context.MODE_PRIVATE);
         dialogAvatar = initDialogAvatar(getContext());
         init();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter = new SettingsPresenterImpl(this);
+        Log.d("onCreateView123", "onStart");
     }
 
     private void init() {
@@ -209,6 +216,12 @@ public class SettingsFragment extends Fragment implements SettingsView {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         presenter.onDestroy();
     }
 

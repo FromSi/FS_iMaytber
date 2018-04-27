@@ -3,6 +3,7 @@ package kz.sgq.fs_imaytber.ui.fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -78,10 +79,9 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     @Override
-    public void setupProfile() {
-        Objects.requireNonNull(getActivity()).getPreferences(MODE_PRIVATE).edit()
-                .putBoolean("profile", false)
-                .apply();
+    public String getToken() {
+        return PreferenceManager.getDefaultSharedPreferences(getActivity())
+                .getString("token", "not");
     }
 
     @Override

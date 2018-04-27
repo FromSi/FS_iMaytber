@@ -140,9 +140,10 @@ public class LocalDB {
         deleteUsers();
     }
 
-    public Flowable<List<TableChats>> getChats(){
+    public Maybe<List<TableChats>> getChats(){
         return database.chats()
                 .getChats()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
@@ -164,13 +165,6 @@ public class LocalDB {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
-
-//    public Maybe<List<TableUsers>> getUsers(List<Integer> list){
-//        return database.users()
-//                .getUsers(list)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
-//    }
 
     public Maybe<TableMessages> getDialog(int id){
         return database.message()
@@ -196,6 +190,12 @@ public class LocalDB {
     public Flowable<List<TableMessages>> getMessages(int idChat){
         return database.message()
                 .getMessages(idChat)
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Flowable<TableMessages> getMessage(){
+        return database.message()
+                .getMessage()
                 .observeOn(AndroidSchedulers.mainThread());
     }
 

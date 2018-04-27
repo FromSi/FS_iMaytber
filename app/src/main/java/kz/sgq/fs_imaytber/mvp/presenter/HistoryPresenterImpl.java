@@ -30,9 +30,11 @@ public class HistoryPresenterImpl implements HistoryPresenter {
     private HistoryView view;
     private HistoryModel model;
     private CompositeDisposable composite;
+    private int size = 0;
 
     public HistoryPresenterImpl(HistoryView view) {
         this.view = view;
+        Log.d("DestroyPause","HistoryPresenterImpl");
         model = new HistoryModelImpl();
         composite = new CompositeDisposable();
         init();
@@ -47,7 +49,8 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                     public void onNext(TableProfile profile) {
                         model.setIdUser(profile.getIduser());
                         composite.clear();
-                        handlerChats();
+//                        handlerChats();
+                        handlerMessage();
                     }
 
                     @Override
@@ -61,42 +64,71 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                 }));
     }
 
+    private void handlerMessage() {
+        composite.add(model.getLocal()
+                .getMessage()
+                .subscribeWith(new DisposableSubscriber<TableMessages>() {
+                    @Override
+                    public void onNext(TableMessages messages) {
+                        Log.d("TestTagMy2", "onNext");
+                        handlerChats();
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        Log.d("TestTagMy2", "onError");
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d("TestTagMy2", "onComplete");
+                    }
+                }));
+    }
+
     private void handlerChats() {
-        composite.add(
-                model.getLocal()
-                        .getChats()
-                        .subscribeWith(new DisposableSubscriber<List<TableChats>>() {
-                            @Override
-                            public void onNext(List<TableChats> chatsList) {
-                                model.clearListIdUser_2();
-                                model.clearListIdChat();
-                                for (int i = 0; i < chatsList.size(); i++) {
-                                    if (model.getIdUser() != chatsList.get(i).getIduser_1())
-                                        model.addListIdUser_2(chatsList.get(i).getIduser_1());
-                                     else
-                                        model.addListIdUser_2(chatsList.get(i).getIduser_2());
+        model.getLocal()
+                .getChats()
+                .subscribe(new MaybeObserver<List<TableChats>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                                    model.addIdChatList(chatsList.get(i).getIdchats());
-                                }
-                                zipHandler();
+                    }
+
+                    @Override
+                    public void onSuccess(List<TableChats> chatsList) {
+                        if (chatsList.size() != model.getIdChatList().size()){
+                            Log.d("TestTagMy2", "onSuccess handlerChats");
+                            model.clearListIdUser_2();
+                            model.clearListIdChat();
+                            for (int i = 0; i < chatsList.size(); i++) {
+                                if (model.getIdUser() != chatsList.get(i).getIduser_1())
+                                    model.addListIdUser_2(chatsList.get(i).getIduser_1());
+                                else
+                                    model.addListIdUser_2(chatsList.get(i).getIduser_2());
+
+                                model.addIdChatList(chatsList.get(i).getIdchats());
                             }
+                        }
+                        Log.d("TestTagMy2", "zipHandler");
+                        zipHandler();
+                    }
 
-                            @Override
-                            public void onError(Throwable t) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                            }
+                    }
 
-                            @Override
-                            public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-                            }
-                        }));
+                    }
+                });
     }
 
     private void zipHandler() {
         view.clearHistory();
         for (int i = 0; i < model.getIdChatList().size(); i++) {
-
             Maybe.zip(model.getLocal().getDialog(model.getIdChatList().get(i)),
                     model.getLocal().getUser(model.getListIdUser_2().get(i)),
                     (messages, tableUsers) -> new HistoryZIP(tableUsers.getAvatar(),
@@ -113,6 +145,7 @@ public class HistoryPresenterImpl implements HistoryPresenter {
 
                         @Override
                         public void onSuccess(HistoryZIP historyZIP) {
+                            Log.d("TestTagMy", "Maybe" + 1);
                             view.addHistory(historyZIP);
                         }
 
@@ -134,5 +167,10 @@ public class HistoryPresenterImpl implements HistoryPresenter {
         composite.clear();
         view = null;
         model = null;
+    }
+
+    @Override
+    public void startDialog(int idUser_2) {
+        view.startDialog(model.getIdUser(), idUser_2);
     }
 }

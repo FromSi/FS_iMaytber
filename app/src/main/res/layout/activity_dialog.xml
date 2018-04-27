@@ -55,7 +55,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center">
-
+            <ImageButton
+                android:id="@+id/b_stiker"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:background="@null"
+                android:src="@drawable/stiker" />
             <EditText
                 android:id="@+id/text"
                 android:layout_width="0dp"
@@ -67,11 +74,19 @@
                 android:id="@+id/send"
                 android:layout_width="wrap_content"
                 android:layout_height="42dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginStart="12dp"
                 android:background="@null"
                 android:src="@drawable/send" />
         </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/stiker"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/avatar_height"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

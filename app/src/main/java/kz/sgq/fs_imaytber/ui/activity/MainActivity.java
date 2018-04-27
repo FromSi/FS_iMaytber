@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -155,6 +156,12 @@ public class MainActivity extends AppCompatActivity implements MainView {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    public void showErrorExit() {
+        Toast.makeText(this, getResources().getString(R.string.error_exit),
+                Toast.LENGTH_SHORT).show();
     }
 
     private void initClickMenuNavigation() {

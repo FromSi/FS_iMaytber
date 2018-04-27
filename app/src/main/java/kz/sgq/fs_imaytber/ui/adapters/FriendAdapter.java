@@ -20,16 +20,16 @@ import kz.sgq.fs_imaytber.R;
 import kz.sgq.fs_imaytber.room.table.TableUsers;
 import kz.sgq.fs_imaytber.util.interfaces.OnSelectedDialogClick;
 
-public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder>{
+public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder> {
     private List<TableUsers> list = new ArrayList<>();
     private OnSelectedDialogClick dialogClick;
 
-    public void addFriend(TableUsers tableUsers){
+    public void addFriend(TableUsers tableUsers) {
         list.add(tableUsers);
         notifyDataSetChanged();
     }
 
-    public List<Integer> getIdUser(){
+    public List<Integer> getIdUser() {
         List<Integer> idList = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             idList.add(list.get(i).getIdusers());
@@ -51,9 +51,10 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
         holder.setAvatar(list.get(position).getAvatar());
         holder.itemClick.setOnClickListener(v -> dialogClick
                 .onClick(list.get(position).getIdusers()));
+
     }
 
-    public void setOnSelectedDialogClick(final OnSelectedDialogClick dialogClick){
+    public void setOnSelectedDialogClick(final OnSelectedDialogClick dialogClick) {
         this.dialogClick = dialogClick;
     }
 
@@ -80,12 +81,12 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
             ButterKnife.bind(this, itemView);
         }
 
-        private void setText(String nick, int idUser){
+        private void setText(String nick, int idUser) {
             this.nick.setText(nick);
-            this.idUser.setText("#"+idUser);
+            this.idUser.setText("#" + idUser);
         }
 
-        private void setAvatar(String url){
+        private void setAvatar(String url) {
             switch (url) {
                 case "def1":
                     Picasso.get()

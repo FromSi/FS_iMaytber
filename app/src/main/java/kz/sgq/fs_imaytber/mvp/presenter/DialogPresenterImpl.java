@@ -33,7 +33,7 @@ public class DialogPresenterImpl implements DialogPresenter {
     }
 
     private void initIdChat() {
-        model.getLocal().getIdChat(model.getIdUser_2())
+        model.getLocal().getChatKey(model.getIdUser_2())
                 .subscribe(new MaybeObserver<TableChats>() {
                     @Override
                     public void onSubscribe(Disposable d) {
