@@ -21,4 +21,6 @@
     <string name="snacbar_error_settings">Ошибка при сохранении</string>
     <string name="snacbar_error_upload_image">Ошибка загрузки изображения</string>
     <string name="hint_text">Напишите текст</string>
+    <string name="bio">bio</string>
+    <string name="notification">Уведомления</string>
 </resources>

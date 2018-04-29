@@ -2,6 +2,8 @@
 <resources>
     <dimen name="avatar_width">90dp</dimen>
     <dimen name="avatar_height">90dp</dimen>
+    <dimen name="avatar_min_size">60dp</dimen>
+    <dimen name="stiker_size">150dp</dimen>
     <dimen name="f_content_layout_marginEnd">8dp</dimen>
     <dimen name="f_content_layout_marginStart">80dp</dimen>
 </resources>

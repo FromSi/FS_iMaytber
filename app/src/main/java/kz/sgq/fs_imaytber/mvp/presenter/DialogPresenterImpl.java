@@ -1,5 +1,7 @@
 package kz.sgq.fs_imaytber.mvp.presenter;
 
+import android.util.Log;
+
 import java.util.List;
 
 import io.reactivex.MaybeObserver;
@@ -22,6 +24,7 @@ public class DialogPresenterImpl implements DialogPresenter {
     private DialogView view;
     private DialogModel model;
     private CompositeDisposable composite;
+    private CompositeDisposable compositeListener;
 
     public DialogPresenterImpl(DialogView view, int idUser_1, int idUser_2) {
         this.view = view;
@@ -53,9 +56,34 @@ public class DialogPresenterImpl implements DialogPresenter {
 
                     @Override
                     public void onComplete() {
-
+                        listenerAddIdChat();
                     }
                 });
+    }
+
+    private void listenerAddIdChat(){
+        compositeListener = new CompositeDisposable();
+        compositeListener.add(model.getLocal()
+        .getIdChatPref(model.getIdUser_2())
+        .subscribeWith(new DisposableSubscriber<TableChats>() {
+            @Override
+            public void onNext(TableChats chats) {
+                model.setKey(chats.getKey());
+                model.setIdChat(chats.getIdchats());
+                init();
+                compositeListener.clear();
+            }
+
+            @Override
+            public void onError(Throwable t) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        }));
     }
 
     private void init() {
@@ -79,7 +107,8 @@ public class DialogPresenterImpl implements DialogPresenter {
                                                 model.addIdMessage(messagesList.get(i).getIdmessages());
                                                 view.addMessage(messagesList.get(i));
                                             }
-                                        } else {
+                                        }
+                                    else {
                                         for (int i = 0; i < messagesList.size(); i++) {
                                             model.addIdMessage(messagesList.get(i).getIdmessages());
                                             view.addMessage(messagesList.get(i));
@@ -150,15 +179,17 @@ public class DialogPresenterImpl implements DialogPresenter {
                 .subscribe(new Observer<POSTMessage>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+                        Log.d("TagListenerIdChat","onSubscribe");
 
                     }
 
                     @Override
                     public void onNext(POSTMessage message) {
-                        init();
                         if (message.getKey() != null) {
                             model.setKey(message.getKey());
                             model.setIdChat(Integer.parseInt(message.getIdchat()));
+                            compositeListener.clear();
+                            init();
                             model.getLocal()
                                     .insertChats(new TableChats(Integer
                                             .parseInt(message.getIdchat()),
@@ -176,22 +207,25 @@ public class DialogPresenterImpl implements DialogPresenter {
                         }
 
                         view.hideHandler();
+                        Log.d("TagListenerIdChat","onNext");
 
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.d("TagListenerIdChat","onError");
                         view.errorMessage();
                     }
 
                     @Override
                     public void onComplete() {
+                        Log.d("TagListenerIdChat","onComplete");
 
                     }
                 });
     }
 
-    private void handlerAddMessage(int id, TableMessages messages){
+    private void handlerAddMessage(int id, TableMessages messages) {
         model.addIdMessage(id);
         model.getLocal()
                 .insertMessage(messages);

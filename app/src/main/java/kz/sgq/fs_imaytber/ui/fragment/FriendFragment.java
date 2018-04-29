@@ -2,10 +2,12 @@ package kz.sgq.fs_imaytber.ui.fragment;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -15,22 +17,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import kz.sgq.fs_imaytber.R;
 import kz.sgq.fs_imaytber.mvp.presenter.FriendPresenterImpl;
-import kz.sgq.fs_imaytber.mvp.presenter.HistoryPresenterImpl;
 import kz.sgq.fs_imaytber.mvp.presenter.interfaces.FriendPresenter;
 import kz.sgq.fs_imaytber.mvp.view.FriendView;
 import kz.sgq.fs_imaytber.room.table.TableUsers;
 import kz.sgq.fs_imaytber.ui.activity.DialogActivity;
 import kz.sgq.fs_imaytber.ui.adapters.FriendAdapter;
-import kz.sgq.fs_imaytber.util.interfaces.OnSelectedDialogClick;
 
 public class FriendFragment extends Fragment implements FriendView {
 
@@ -41,6 +45,7 @@ public class FriendFragment extends Fragment implements FriendView {
 
     private Dialog addFriend;
     private ProgressDialog loading;
+    private Dialog friendDialog;
 
     private FriendPresenter presenter;
     private View view;
@@ -65,6 +70,35 @@ public class FriendFragment extends Fragment implements FriendView {
         onClickListenerAdapter();
     }
 
+    private Dialog dialogFriend(int idUser) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+        View view = getLayoutInflater().inflate(R.layout.dialog_user, null);
+        CircleImageView avatar = view.findViewById(R.id.avatar);
+        TextView nick = view.findViewById(R.id.nick);
+        TextView login = view.findViewById(R.id.login);
+        TextView bio = view.findViewById(R.id.bio);
+        Switch notif = view.findViewById(R.id.notif);
+        notif.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            }
+        });
+        builder.setView(view)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        view.findViewById(R.id.fab).setOnClickListener(v ->{
+            dialog.dismiss();
+            presenter.startDialog(idUser);
+        } );
+        return dialog;
+    }
+
     @OnClick(R.id.fab)
     void onClick() {
         addFriend.show();
@@ -74,7 +108,7 @@ public class FriendFragment extends Fragment implements FriendView {
     public void onStart() {
         super.onStart();
         presenter = new FriendPresenterImpl(this);
-        Log.d("onCreateView123","onStart");
+        Log.d("onCreateView123", "onStart");
     }
 
     private void init() {
@@ -87,7 +121,10 @@ public class FriendFragment extends Fragment implements FriendView {
     }
 
     private void onClickListenerAdapter() {
-        adapter.setOnSelectedDialogClick(idUser -> presenter.startDialog(idUser));
+        adapter.setOnSelectedDialogClick(idUser -> {
+            friendDialog = dialogFriend(idUser);
+            friendDialog.show();
+        });
     }
 
     @Override

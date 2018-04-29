@@ -153,6 +153,12 @@ public class LocalDB {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Flowable<TableChats> getIdChatPref(int idUser){
+        return database.chats()
+                .getIdChatPref(idUser)
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Flowable<TableProfile> getProfile(){
         return database.profile()
                 .getProfile()

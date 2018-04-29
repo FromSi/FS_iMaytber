@@ -28,6 +28,9 @@ public interface DaoChats {
     @Query("SELECT * FROM `tablechats` WHERE `idchats`=:idChat")
     Maybe<TableChats> getIdChat(int idChat);
 
+    @Query("SELECT * FROM `tablechats` WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
+    Flowable<TableChats> getIdChatPref(int idUser);
+
     @Query("UPDATE `tablechats` SET `key`=:key WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
     void putKey(String key, int idUser);
 
