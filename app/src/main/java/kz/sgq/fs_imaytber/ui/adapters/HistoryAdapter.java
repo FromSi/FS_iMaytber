@@ -11,8 +11,12 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,12 +29,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     private List<HistoryZIP> messageList = new ArrayList<>();
     private OnSelectedDialogClick dialogClick;
 
-    public void addHistory(HistoryZIP message){
+    public void addHistory(HistoryZIP message) {
         this.messageList.add(message);
         notifyDataSetChanged();
     }
 
-    public void clearHistory(){
+    public void clearHistory() {
         messageList.clear();
     }
 
@@ -41,7 +45,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         return new ViewHolder(view);
     }
 
-    public void setOnSelectedDialogClick(final OnSelectedDialogClick dialogClick){
+    public void setOnSelectedDialogClick(final OnSelectedDialogClick dialogClick) {
         this.dialogClick = dialogClick;
     }
 
@@ -52,6 +56,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.setContent(messageList.get(position).getContent());
         holder.itemClick.setOnClickListener(v -> dialogClick
                 .onClick(messageList.get(position).getIdUser()));
+        holder.setTime(messageList.get(position).getTime());
     }
 
     @Override
@@ -68,37 +73,35 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         TextView content;
         @BindView(R.id.itemClick)
         CardView itemClick;
+        @BindView(R.id.time)
+        TextView time;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        private void setNick(String nick){
+        private void setNick(String nick) {
             this.nick.setText(nick);
         }
 
-        private void setAvatar (String avatar){
+        private void setAvatar(String avatar) {
             switch (avatar) {
                 case "def1":
-                    Picasso.get()
-                            .load(R.drawable.def1)
-                            .into(this.avatar);
+                    this.avatar.setImageDrawable(itemView.getResources()
+                            .getDrawable(R.drawable.def1));
                     break;
                 case "def2":
-                    Picasso.get()
-                            .load(R.drawable.def2)
-                            .into(this.avatar);
+                    this.avatar.setImageDrawable(itemView.getResources()
+                            .getDrawable(R.drawable.def2));
                     break;
                 case "def3":
-                    Picasso.get()
-                            .load(R.drawable.def3)
-                            .into(this.avatar);
+                    this.avatar.setImageDrawable(itemView.getResources()
+                            .getDrawable(R.drawable.def3));
                     break;
                 case "def4":
-                    Picasso.get()
-                            .load(R.drawable.def4)
-                            .into(this.avatar);
+                    this.avatar.setImageDrawable(itemView.getResources()
+                            .getDrawable(R.drawable.def4));
                     break;
                 default:
                     Picasso.get()
@@ -108,8 +111,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             }
         }
 
-        private void setContent(String content){
+        private void setContent(String content) {
             this.content.setText(content);
+        }
+
+        private void setTime(String time) {
+            SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd hh:mm:ss Z yyyy",
+                    Locale.ROOT);
+            Date newDate = null;
+            try {
+                newDate = format.parse(time);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            format = new SimpleDateFormat("H:mm");
+            this.time.setText(format.format(newDate));
         }
     }
 }

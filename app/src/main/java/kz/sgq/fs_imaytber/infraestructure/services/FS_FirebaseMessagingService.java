@@ -25,6 +25,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
     private String content;
     private String nick;
     private String key;
+    private String time;
     private int idmessages;
     private int idchats;
     private int iduser;
@@ -36,6 +37,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
             content = remoteMessage.getData().get("content");
             nick = remoteMessage.getData().get("nick");
             key = remoteMessage.getData().get("key");
+            time = remoteMessage.getData().get("time");
             idmessages = Integer.parseInt(remoteMessage.getData().get("idmessages"));
             idchats = Integer.parseInt(remoteMessage.getData().get("idchats"));
             iduser = Integer.parseInt(remoteMessage.getData().get("iduser"));
@@ -57,7 +59,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
                     @Override
                     public void onSuccess(TableChats chats) {
                         localDB.insertMessage(new TableMessages(idmessages, idchats,
-                                iduser, new FS_RC4(key, content).start()));
+                                iduser, new FS_RC4(key, content).start(), time));
                     }
 
                     @Override
@@ -68,7 +70,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
                     @Override
                     public void onComplete() {
                         localDB.insertMessage(new TableMessages(idmessages, idchats,
-                                iduser, new FS_RC4(key, content).start()));
+                                iduser, new FS_RC4(key, content).start(), time));
                         localDB.insertChats(new TableChats(idchats, iduser_1,
                                 iduser_2, key));
 

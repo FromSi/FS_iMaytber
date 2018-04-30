@@ -19,6 +19,9 @@ public class POSTMessage {
     @SerializedName("content")
     @Expose
     private String content;
+    @SerializedName("time")
+    @Expose
+    private String time;
 
     public String getIduser() {
         return iduser;
@@ -60,4 +63,11 @@ public class POSTMessage {
         this.content = content;
     }
 
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 }

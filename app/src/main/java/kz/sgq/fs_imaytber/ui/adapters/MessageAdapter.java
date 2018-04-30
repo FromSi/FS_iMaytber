@@ -12,26 +12,39 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 import kz.sgq.fs_imaytber.R;
 import kz.sgq.fs_imaytber.room.table.TableMessages;
-import kz.sgq.fs_imaytber.room.table.TableUsers;
+import kz.sgq.fs_imaytber.util.Message;
+import kz.sgq.fs_imaytber.util.MessageCondition;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder>{
-    private List<TableMessages> list = new ArrayList<>();
+public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+    private List<Message> list = new ArrayList<>();
+    private List<MessageCondition> conditionList = new ArrayList<>();
     private int idUser;
 
-    public void setIdUser(int idUser){
+    public void setIdUser(int idUser) {
         this.idUser = idUser;
     }
 
-    public void addMessage(TableMessages message){
+    public int addMessage(Message message) {
         list.add(message);
+        conditionList.add(MessageCondition.LOADING);
+        notifyDataSetChanged();
+        return list.size() - 1;
+    }
+
+    public void uploadCondition(int idMessage, MessageCondition condition) {
+        conditionList.set(idMessage, condition);
         notifyDataSetChanged();
     }
 
@@ -45,10 +58,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         holder.setContent(list.get(position).getContent());
-        if (idUser == list.get(position).getIduser())
+        if (idUser == list.get(position).getIdUser())
             holder.setLContent(true);
         else
             holder.setLContent(false);
+        holder.setCondition(conditionList.get(position));
+        holder.setTime(list.get(position).getTime());
     }
 
     @Override
@@ -65,17 +80,40 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         LinearLayout item;
         @BindView(R.id.photo)
         ImageView photo;
+        @BindView(R.id.condition)
+        ImageView condition;
+        @BindView(R.id.s_time)
+        TextView s_time;
+        @BindView(R.id.m_time)
+        TextView m_time;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        private void setContent(String content){
+        private void setCondition(MessageCondition condition) {
+            switch (condition) {
+                case DONE:
+                    this.condition.setImageDrawable(itemView.getResources()
+                            .getDrawable(R.drawable.done));
+                    break;
+                case ERROR:
+                    this.condition.setImageDrawable(itemView.getResources()
+                            .getDrawable(R.drawable.error));
+                    break;
+                case LOADING:
+                    this.condition.setImageDrawable(itemView.getResources()
+                            .getDrawable(R.drawable.loading));
+                    break;
+            }
+        }
+
+        private void setContent(String content) {
             this.content.setText(content);
         }
 
-        private void setLContent(boolean bool){
+        private void setLContent(boolean bool) {
             if (bool) {
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMarginEnd((int) itemView.getResources().getDimension(R.dimen.f_content_layout_marginStart));
@@ -89,6 +127,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
                 l_content.setLayoutParams(layoutParams);
                 l_content.setGravity(Gravity.END);
             }
+        }
+
+        private void setTime(String time){
+//            String pattern = "H:mm";
+//            SimpleDateFormat format = new SimpleDateFormat(pattern);
+//            s_time.setText(format.format(Date.parse(time)));
+//            m_time.setText(format.format(Date.parse(time)));
+            SimpleDateFormat format = new SimpleDateFormat("EEE MMM dd hh:mm:ss Z yyyy", Locale.ROOT);
+            Date newDate = null;
+            try {
+                newDate = format.parse(time);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            format = new SimpleDateFormat("H:mm");
+            s_time.setText(format.format(newDate));
+            m_time.setText(format.format(newDate));
         }
 
     }

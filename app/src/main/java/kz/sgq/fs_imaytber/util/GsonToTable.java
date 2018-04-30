@@ -29,10 +29,6 @@ public class GsonToTable {
         return list;
     }
 
-//    public static TableChats tableChats(){
-//
-//    }
-
     public static List<TableFriends> tableFriends(List<GETFriend> friendList) {
         List<TableFriends> list = new ArrayList<>();
         for (int i = 0; i < friendList.size(); i++) {
@@ -55,7 +51,8 @@ public class GsonToTable {
             list.add(new TableMessages(Integer.parseInt(messageList.get(i).getIdmessage()),
                     Integer.parseInt(messageList.get(i).getIdchat()),
                     Integer.parseInt(messageList.get(i).getIduser()),
-                    messageList.get(i).getContent()));
+                    messageList.get(i).getContent(),
+                    messageList.get(i).getTime()));
         }
         return list;
     }
@@ -64,7 +61,8 @@ public class GsonToTable {
         return new TableMessages(Integer.parseInt(message.getIdmessage()),
                 Integer.parseInt(message.getIdchat()),
                 Integer.parseInt(message.getIduser()),
-                new FS_RC4(key, message.getContent()).start());
+                new FS_RC4(key, message.getContent()).start(),
+                message.getTime());
     }
 
     public static TableProfile tableProfile(GETLogin login) {

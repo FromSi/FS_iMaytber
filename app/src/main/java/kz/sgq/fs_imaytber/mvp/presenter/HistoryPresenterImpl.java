@@ -134,7 +134,8 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                     (messages, tableUsers) -> new HistoryZIP(tableUsers.getAvatar(),
                             tableUsers.getNick(),
                             tableUsers.getIdusers(),
-                            messages.getContent()))
+                            messages.getContent(),
+                            messages.getTime()))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new MaybeObserver<HistoryZIP>() {

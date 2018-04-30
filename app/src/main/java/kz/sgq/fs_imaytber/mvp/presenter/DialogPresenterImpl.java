@@ -2,6 +2,7 @@ package kz.sgq.fs_imaytber.mvp.presenter;
 
 import android.util.Log;
 
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.MaybeObserver;
@@ -19,6 +20,8 @@ import kz.sgq.fs_imaytber.room.table.TableMessages;
 import kz.sgq.fs_imaytber.room.table.TableUsers;
 import kz.sgq.fs_imaytber.util.FS_RC4;
 import kz.sgq.fs_imaytber.util.GsonToTable;
+import kz.sgq.fs_imaytber.util.Message;
+import kz.sgq.fs_imaytber.util.MessageCondition;
 
 public class DialogPresenterImpl implements DialogPresenter {
     private DialogView view;
@@ -61,29 +64,29 @@ public class DialogPresenterImpl implements DialogPresenter {
                 });
     }
 
-    private void listenerAddIdChat(){
+    private void listenerAddIdChat() {
         compositeListener = new CompositeDisposable();
         compositeListener.add(model.getLocal()
-        .getIdChatPref(model.getIdUser_2())
-        .subscribeWith(new DisposableSubscriber<TableChats>() {
-            @Override
-            public void onNext(TableChats chats) {
-                model.setKey(chats.getKey());
-                model.setIdChat(chats.getIdchats());
-                init();
-                compositeListener.clear();
-            }
+                .getIdChatPref(model.getIdUser_2())
+                .subscribeWith(new DisposableSubscriber<TableChats>() {
+                    @Override
+                    public void onNext(TableChats chats) {
+                        model.setKey(chats.getKey());
+                        model.setIdChat(chats.getIdchats());
+                        init();
+                        compositeListener.clear();
+                    }
 
-            @Override
-            public void onError(Throwable t) {
+                    @Override
+                    public void onError(Throwable t) {
 
-            }
+                    }
 
-            @Override
-            public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-            }
-        }));
+                    }
+                }));
     }
 
     private void init() {
@@ -104,14 +107,30 @@ public class DialogPresenterImpl implements DialogPresenter {
                                                     check = false;
                                             }
                                             if (check) {
-                                                model.addIdMessage(messagesList.get(i).getIdmessages());
-                                                view.addMessage(messagesList.get(i));
+                                                model.addIdMessage(messagesList.get(i)
+                                                        .getIdmessages());
+                                                view.uploadCondition(view
+                                                                .addMessage(new Message(messagesList
+                                                                        .get(i).getIduser(),
+                                                                        messagesList.get(i)
+                                                                                .getContent(),
+                                                                        messagesList.get(i)
+                                                                                .getTime())),
+                                                        MessageCondition.DONE);
                                             }
                                         }
                                     else {
                                         for (int i = 0; i < messagesList.size(); i++) {
-                                            model.addIdMessage(messagesList.get(i).getIdmessages());
-                                            view.addMessage(messagesList.get(i));
+                                            model.addIdMessage(messagesList.get(i)
+                                                    .getIdmessages());
+                                            view.uploadCondition(view
+                                                            .addMessage(new Message(messagesList
+                                                                    .get(i).getIduser(),
+                                                                    messagesList.get(i)
+                                                                            .getContent(),
+                                                                    messagesList.get(i)
+                                                            .getTime())),
+                                                    MessageCondition.DONE);
                                         }
                                     }
                                 }
@@ -161,25 +180,29 @@ public class DialogPresenterImpl implements DialogPresenter {
         view.setAvatar(model.getAvatar());
     }
 
-    private String cryText() {
+    private String cryText(String content) {
         if (model.getKey() != null) {
-            return new FS_RC4(model.getKey(), view.getText())
+            return new FS_RC4(model.getKey(), content)
                     .start();
         } else {
-            return view.getText();
+            return content;
         }
     }
 
     @Override
     public void handlerMessage() {
+        String content = view.getText();
+        String time = new Date().toString();
+        int idMessage = view.addMessage(new Message(model.getIdUser_2(),
+                content, time));
         model.getSocket()
                 .postMessage(model.getIdUser_1(),
                         model.getIdUser_2(),
-                        cryText())
+                        cryText(content),
+                        time)
                 .subscribe(new Observer<POSTMessage>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-                        Log.d("TagListenerIdChat","onSubscribe");
 
                     }
 
@@ -198,38 +221,29 @@ public class DialogPresenterImpl implements DialogPresenter {
                                             message.getKey()));
                         }
 
+                        view.uploadCondition(idMessage, MessageCondition.DONE);
+                        model.addIdMessage(Integer.parseInt(message.getIdmessage()));
                         if (model.getKey() != null) {
-                            handlerAddMessage(Integer.parseInt(message.getIdmessage()),
-                                    GsonToTable.tableMessages(message, model.getKey()));
+                            model.getLocal()
+                                    .insertMessage(GsonToTable
+                                            .tableMessages(message, model.getKey()));
                         } else {
-                            handlerAddMessage(Integer.parseInt(message.getIdmessage()),
-                                    GsonToTable.tableMessages(message, message.getKey()));
+                            model.getLocal()
+                                    .insertMessage(GsonToTable
+                                            .tableMessages(message, message.getKey()));
                         }
-
-                        view.hideHandler();
-                        Log.d("TagListenerIdChat","onNext");
-
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("TagListenerIdChat","onError");
-                        view.errorMessage();
+                        view.uploadCondition(idMessage, MessageCondition.ERROR);
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d("TagListenerIdChat","onComplete");
 
                     }
                 });
-    }
-
-    private void handlerAddMessage(int id, TableMessages messages) {
-        model.addIdMessage(id);
-        model.getLocal()
-                .insertMessage(messages);
-        view.addMessage(messages);
     }
 
     @Override

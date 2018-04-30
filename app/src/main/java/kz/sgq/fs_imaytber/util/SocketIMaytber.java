@@ -78,8 +78,9 @@ public class SocketIMaytber {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<POSTMessage> postMessage(int iduser_1, int iduser_2, String content) {
-        return socket.postMessage(iduser_1, iduser_2, content)
+    public Observable<POSTMessage> postMessage(int iduser_1, int iduser_2,
+                                               String content, String time) {
+        return socket.postMessage(iduser_1, iduser_2, content, time)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

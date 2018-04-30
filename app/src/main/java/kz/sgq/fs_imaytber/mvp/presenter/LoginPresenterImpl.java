@@ -64,7 +64,7 @@ public class LoginPresenterImpl implements LoginPresenter {
         }
     }
 
-    private void handlerToken(int idUser){
+    private void handlerToken(int idUser) {
         model.getSocket()
                 .putToken(idUser, view.getToken())
                 .subscribe();
@@ -95,7 +95,8 @@ public class LoginPresenterImpl implements LoginPresenter {
                                                     loginZIP.getMessages().get(i).getIduser(),
                                                     new FS_RC4(loginZIP.getChats().get(j).getKey(),
                                                             loginZIP.getMessages().get(i).getContent())
-                                                            .start()));
+                                                            .start(),
+                                                    loginZIP.getMessages().get(i).getTime()));
                             }
                         }
 

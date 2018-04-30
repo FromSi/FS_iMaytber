@@ -46,7 +46,8 @@ public interface SocketService {
     @POST("/message")
     Observable<POSTMessage> postMessage(@Query("iduser_1") int iduser_1,
                                         @Query("iduser_2") int iduser_2,
-                                        @Query("content") String content);
+                                        @Query("content") String content,
+                                        @Query("time") String time);
 
     @PUT("/nick")
     Completable putNick(@Query("iduser") int iduser, @Query("nick") String nick);

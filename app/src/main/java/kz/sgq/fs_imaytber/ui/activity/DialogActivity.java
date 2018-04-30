@@ -25,6 +25,8 @@ import kz.sgq.fs_imaytber.mvp.view.DialogView;
 import kz.sgq.fs_imaytber.room.table.TableMessages;
 import kz.sgq.fs_imaytber.ui.adapters.MessageAdapter;
 import kz.sgq.fs_imaytber.ui.adapters.StikerAdapter;
+import kz.sgq.fs_imaytber.util.Message;
+import kz.sgq.fs_imaytber.util.MessageCondition;
 
 public class DialogActivity extends AppCompatActivity implements DialogView {
 
@@ -109,8 +111,10 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
     }
 
     @Override
-    public void addMessage(TableMessages messages) {
-        adapter.addMessage(messages);
+    public int addMessage(Message messages) {
+        int idMessage = adapter.addMessage(messages);
+        recyclerView.scrollToPosition(adapter.getItemCount()-1);
+        return idMessage;
     }
 
     @Override
@@ -160,6 +164,11 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
                         .into(this.avatar);
                 break;
         }
+    }
+
+    @Override
+    public void uploadCondition(int idMessage, MessageCondition condition) {
+        adapter.uploadCondition(idMessage, condition);
     }
 
     @Override

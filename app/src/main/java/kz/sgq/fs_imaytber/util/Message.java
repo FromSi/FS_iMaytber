@@ -1,34 +1,14 @@
 package kz.sgq.fs_imaytber.util;
 
-public class HistoryZIP {
-    private String avatar;
-    private String nick;
+public class Message {
     private int idUser;
     private String content;
     private String time;
 
-    public HistoryZIP(String avatar, String nick, int idUser, String content, String time) {
-        this.avatar = avatar;
-        this.nick = nick;
+    public Message(int idUser, String content, String time) {
         this.idUser = idUser;
         this.content = content;
         this.time = time;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getNick() {
-        return nick;
-    }
-
-    public void setNick(String nick) {
-        this.nick = nick;
     }
 
     public int getIdUser() {

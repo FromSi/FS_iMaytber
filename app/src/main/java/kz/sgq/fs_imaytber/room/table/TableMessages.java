@@ -10,12 +10,14 @@ public class TableMessages {
     int idchats;
     int iduser;
     String content;
+    String time;
 
-    public TableMessages(int idmessages, int idchats, int iduser, String content) {
+    public TableMessages(int idmessages, int idchats, int iduser, String content, String time) {
         this.idmessages = idmessages;
         this.idchats = idchats;
         this.iduser = iduser;
         this.content = content;
+        this.time = time;
     }
 
     public int getIdmessages() {
@@ -48,5 +50,13 @@ public class TableMessages {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }
