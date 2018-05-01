@@ -3,6 +3,7 @@
     android:id="@+id/stiker"
     android:layout_width="@dimen/avatar_width"
     android:layout_height="@dimen/avatar_height"
-    android:src="@drawable/stiker_1"
+    android:clickable="true"
     android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"/>
+    android:layout_marginEnd="8dp"
+    android:focusable="true" />

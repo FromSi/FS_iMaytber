@@ -1,10 +1,12 @@
 package kz.sgq.fs_imaytber.ui.activity;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -27,6 +29,8 @@ import kz.sgq.fs_imaytber.ui.adapters.MessageAdapter;
 import kz.sgq.fs_imaytber.ui.adapters.StikerAdapter;
 import kz.sgq.fs_imaytber.util.Message;
 import kz.sgq.fs_imaytber.util.MessageCondition;
+import kz.sgq.fs_imaytber.util.Stikers;
+import kz.sgq.fs_imaytber.util.interfaces.OnSelectedStikerListener;
 
 public class DialogActivity extends AppCompatActivity implements DialogView {
 
@@ -42,6 +46,8 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
     ImageView avatar;
     @BindView(R.id.stiker)
     RecyclerView stiker;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     private MessageAdapter adapter;
     private StikerAdapter stikerAdapter;
@@ -76,12 +82,12 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
     }
 
     @OnClick(R.id.send)
-    public void onClick(){
+    public void onClick() {
         presenter.handlerMessage();
     }
 
     @OnClick(R.id.b_stiker)
-    public void onClickStiker(){
+    public void onClickStiker() {
         if (stiker.getVisibility() == View.VISIBLE)
             stiker.setVisibility(View.GONE);
         else
@@ -95,14 +101,39 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
         recyclerView.setLayoutManager(linearLayoutManager);
         adapter = new MessageAdapter();
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (linearLayoutManager.getItemCount() - 1 ==
+                        linearLayoutManager.findLastVisibleItemPosition())
+                    fab.hide();
+                else
+                    fab.show();
+            }
+        });
     }
 
-    private void initStikers(){
+    @OnClick(R.id.fab)
+    public void scrollDown(){
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+    }
+
+    private void initStikers() {
         LinearLayoutManager horizontalLayoutManagaer = new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false);
         stiker.setLayoutManager(horizontalLayoutManagaer);
         stikerAdapter = new StikerAdapter();
         stiker.setAdapter(stikerAdapter);
+        stikerAdapter.initStiker(Stikers.getOneStikerPack());
+        stikerAdapter.notifyDataSetChanged();
+        stikerAdapter.setOnSelectedStikerListener(new OnSelectedStikerListener() {
+            @Override
+            public void onClickStiker(String stiker) {
+                text.setText(stiker);
+                presenter.handlerMessage();
+            }
+        });
     }
 
     @Override
@@ -113,7 +144,7 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
     @Override
     public int addMessage(Message messages) {
         int idMessage = adapter.addMessage(messages);
-        recyclerView.scrollToPosition(adapter.getItemCount()-1);
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
         return idMessage;
     }
 

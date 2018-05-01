@@ -15,7 +15,7 @@
         android:gravity="end">
 
         <LinearLayout
-            android:id="@+id/l_stiker"
+            android:id="@+id/containerOne"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="end"
@@ -44,12 +44,14 @@
         </LinearLayout>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/containerTwo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="wrap_content"
