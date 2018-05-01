@@ -62,7 +62,7 @@
             android:layout_marginStart="8dp"
             android:clickable="true"
             android:focusable="true"
-            android:src="@drawable/avatar"
+            android:src="@drawable/icon3"
             android:layout_gravity="center"/>
     </LinearLayout>
 </LinearLayout>

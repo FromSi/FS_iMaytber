@@ -17,11 +17,14 @@ public interface DaoUsers {
     @Insert
     void insertAll(List<TableUsers> usersList);
 
-    @Query("SELECT * FROM `tableusers` WHERE `idusers`=:idusers")
-    Maybe<TableUsers> getUser(int idusers);
+    @Query("SELECT * FROM `tableusers` WHERE `idusers`=:idUser")
+    Maybe<TableUsers> getUser(int idUser);
 
-//    @Query("SELECT * FROM `tableusers` WHERE `idusers`=:list")
-//    Maybe<List<TableUsers>> getUsers(List<Integer> list);
+    @Query("UPDATE `tableusers` SET `nick`=:nick WHERE `idusers`=:idUser")
+    void putNick(String nick, int idUser);
+
+    @Query("UPDATE `tableusers` SET `avatar`=:avatar WHERE `idusers`=:idUser")
+    void putAvatar(String avatar, int idUser);
 
     @Query("DELETE FROM `tableusers`")
     void delete();

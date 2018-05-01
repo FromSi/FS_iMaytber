@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.List;
 
@@ -29,6 +31,10 @@ public class HistoryFragment extends Fragment implements HistoryView{
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.nullItem)
+    LinearLayout nullItem;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     private View view;
     private HistoryPresenter presenter;
@@ -88,6 +94,7 @@ public class HistoryFragment extends Fragment implements HistoryView{
 
     @Override
     public void addHistory(HistoryZIP message) {
+        nullItem.setVisibility(View.GONE);
         adapter.addHistory(message);
     }
 
@@ -107,5 +114,11 @@ public class HistoryFragment extends Fragment implements HistoryView{
         intent.putExtra("idUser_1", idUser_1);
         intent.putExtra("idUser_2", idUser_2);
         startActivity(intent);
+    }
+
+    @Override
+    public void showNullItem() {
+
+        nullItem.setVisibility(View.VISIBLE);
     }
 }

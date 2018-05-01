@@ -10,4 +10,5 @@ public interface HistoryView {
     void clearHistory();
 
     void startDialog(int idUser_1, int idUser_2);
+    void showNullItem();
 }

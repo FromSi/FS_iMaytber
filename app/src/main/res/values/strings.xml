@@ -23,4 +23,6 @@
     <string name="hint_text">Напишите текст</string>
     <string name="bio">bio</string>
     <string name="notification">Уведомления</string>
+    <string name="no_dialogs">Нет диалогов</string>
+    <string name="no_contacts">Нет контактов</string>
 </resources>

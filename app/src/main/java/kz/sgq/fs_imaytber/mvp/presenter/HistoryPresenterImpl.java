@@ -34,10 +34,37 @@ public class HistoryPresenterImpl implements HistoryPresenter {
 
     public HistoryPresenterImpl(HistoryView view) {
         this.view = view;
-        Log.d("DestroyPause","HistoryPresenterImpl");
+        Log.d("DestroyPause", "HistoryPresenterImpl");
         model = new HistoryModelImpl();
         composite = new CompositeDisposable();
-        init();
+        checkItem();
+    }
+
+    private void checkItem() {
+        model.getLocal()
+                .getChat()
+                .subscribe(new MaybeObserver<TableChats>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(TableChats chats) {
+                        init();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        init();
+                        view.showNullItem();
+                    }
+                });
     }
 
     private void init() {
@@ -97,7 +124,7 @@ public class HistoryPresenterImpl implements HistoryPresenter {
 
                     @Override
                     public void onSuccess(List<TableChats> chatsList) {
-                        if (chatsList.size() != model.getIdChatList().size()){
+                        if (chatsList.size() != model.getIdChatList().size()) {
                             Log.d("TestTagMy2", "onSuccess handlerChats");
                             model.clearListIdUser_2();
                             model.clearListIdChat();

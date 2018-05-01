@@ -30,7 +30,34 @@ public class FriendPresenterImpl implements FriendPresenter {
         this.view = view;
         composite = new CompositeDisposable();
         model = new FriendModelImpl();
-        init();
+        checkItem();
+    }
+
+    private void checkItem() {
+        model.getLocal()
+                .getFriend()
+                .subscribe(new MaybeObserver<TableFriends>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(TableFriends tableFriends) {
+                        init();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        init();
+                        view.showNullItem();
+                    }
+                });
     }
 
     void init() {
@@ -71,7 +98,6 @@ public class FriendPresenterImpl implements FriendPresenter {
 
                             @Override
                             public void onComplete() {
-
                             }
                         }));
     }

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -40,6 +41,10 @@ public class FriendFragment extends Fragment implements FriendView {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.nullItem)
+    LinearLayout nullItem;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     private FriendAdapter adapter;
 
@@ -127,12 +132,6 @@ public class FriendFragment extends Fragment implements FriendView {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        presenter.onDestroy();
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         presenter.onDestroy();
@@ -140,6 +139,7 @@ public class FriendFragment extends Fragment implements FriendView {
 
     @Override
     public void addFriend(TableUsers user) {
+        nullItem.setVisibility(View.GONE);
         adapter.addFriend(user);
     }
 
@@ -189,5 +189,11 @@ public class FriendFragment extends Fragment implements FriendView {
         intent.putExtra("idUser_1", idUser_1);
         intent.putExtra("idUser_2", idUser_2);
         startActivity(intent);
+    }
+
+    @Override
+    public void showNullItem() {
+        nullItem.setVisibility(View.VISIBLE);
+
     }
 }

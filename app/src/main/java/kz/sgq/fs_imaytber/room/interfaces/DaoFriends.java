@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import kz.sgq.fs_imaytber.room.table.TableFriends;
 
 @Dao
@@ -19,6 +20,9 @@ public interface DaoFriends {
 
     @Query("SELECT * FROM `tablefriends`")
     Flowable<List<TableFriends>> getFriends();
+
+    @Query("SELECT * FROM `tablefriends` ORDER BY `idfriends` LIMIT 1")
+    Maybe<TableFriends> getFriend();
 
     @Query("DELETE FROM `tablefriends`")
     void delete();

@@ -8,7 +8,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import io.reactivex.MaybeObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableMaybeObserver;
 import io.reactivex.schedulers.Schedulers;
 import kz.sgq.fs_imaytber.infraestructure.networking.gson.get.GETProfile;
 import kz.sgq.fs_imaytber.room.table.TableChats;
@@ -24,6 +23,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
     private SocketIMaytber socket = new SocketIMaytber();
     private String content;
     private String nick;
+    private String avatar;
     private String key;
     private String time;
     private int idmessages;
@@ -31,11 +31,22 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
     private int iduser;
     private int iduser_1;
     private int iduser_2;
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getData().size() > 0) {
+            init(remoteMessage);
+        }
+    }
+
+    private void init(RemoteMessage remoteMessage) {
+        if (remoteMessage.getData().get("content") != null &&
+                remoteMessage.getData().get("key") != null &&
+                remoteMessage.getData().get("time") != null &&
+                remoteMessage.getData().get("idmessages") != null &&
+                remoteMessage.getData().get("idchats") != null &&
+                remoteMessage.getData().get("iduser") != null) {
             content = remoteMessage.getData().get("content");
-            nick = remoteMessage.getData().get("nick");
             key = remoteMessage.getData().get("key");
             time = remoteMessage.getData().get("time");
             idmessages = Integer.parseInt(remoteMessage.getData().get("idmessages"));
@@ -44,10 +55,46 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
             iduser_1 = Integer.parseInt(remoteMessage.getData().get("iduser_1"));
             iduser_2 = Integer.parseInt(remoteMessage.getData().get("iduser_2"));
             handlerUser();
+        } else if (remoteMessage.getData().get("iduser") != null &&
+                remoteMessage.getData().get("nick") != null) {
+            iduser = Integer.parseInt(remoteMessage.getData().get("iduser"));
+            nick = remoteMessage.getData().get("nick");
+            updateNick();
+        } else if (remoteMessage.getData().get("iduser") != null &&
+                remoteMessage.getData().get("avatar") != null) {
+            iduser = Integer.parseInt(remoteMessage.getData().get("iduser"));
+            avatar = remoteMessage.getData().get("avatar");
+            updateAvatar();
         }
     }
 
-    private void addMessage(){
+    private void clear() {
+        Log.d("TagTestServiseFCM", "clear");
+        content = null;
+        nick = null;
+        avatar = null;
+        key = null;
+        time = null;
+        idmessages = 0;
+        idchats = 0;
+        iduser = 0;
+        iduser_1 = 0;
+        iduser_2 = 0;
+    }
+
+    private void updateNick() {
+        Log.d("TagTestServiseFCM", "updateNick");
+        localDB.updateNickFriend(nick, iduser);
+        clear();
+    }
+
+    private void updateAvatar() {
+        Log.d("TagTestServiseFCM", "updateAvatar");
+        localDB.updateAvatarFriend(avatar, iduser);
+        clear();
+    }
+
+    private void addMessage() {
         localDB.getIdChat(idchats)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new MaybeObserver<TableChats>() {
@@ -58,8 +105,10 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
 
                     @Override
                     public void onSuccess(TableChats chats) {
+                        Log.d("TagTestServiseFCM", "addMessage onSuccess");
                         localDB.insertMessage(new TableMessages(idmessages, idchats,
                                 iduser, new FS_RC4(key, content).start(), time));
+                        clear();
                     }
 
                     @Override
@@ -69,10 +118,12 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
 
                     @Override
                     public void onComplete() {
+                        Log.d("TagTestServiseFCM", "addMessage onComplete");
                         localDB.insertMessage(new TableMessages(idmessages, idchats,
                                 iduser, new FS_RC4(key, content).start(), time));
                         localDB.insertChats(new TableChats(idchats, iduser_1,
                                 iduser_2, key));
+                        clear();
 
                     }
                 });
@@ -88,6 +139,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
 
                     @Override
                     public void onSuccess(TableUsers tableUsers) {
+                        Log.d("TagTestServiseFCM", "handlerUser onSuccess");
                         addMessage();
                     }
 
@@ -98,6 +150,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
 
                     @Override
                     public void onComplete() {
+                        Log.d("TagTestServiseFCM", "handlerUser onComplete");
                         downloadUser(iduser_1);
                     }
                 });
@@ -113,6 +166,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
 
                     @Override
                     public void onNext(GETProfile getProfile) {
+                        Log.d("TagTestServiseFCM", "downloadUser");
                         TableUsers user = GsonToTable.tableUsers(getProfile);
                         localDB.insertUsers(user);
                         addMessage();

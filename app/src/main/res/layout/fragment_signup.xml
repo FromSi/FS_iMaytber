@@ -32,7 +32,7 @@
                         android:layout_height="100dp"
                         android:clickable="true"
                         android:focusable="true"
-                        android:src="@drawable/avatar" />
+                        android:src="@drawable/icon3" />
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/layoutNick"

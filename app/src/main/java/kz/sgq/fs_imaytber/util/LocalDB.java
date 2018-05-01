@@ -126,6 +126,18 @@ public class LocalDB {
                 .subscribe();
     }
 
+    public void updateNickFriend(String nick, int idUser){
+        Completable.fromAction(() -> database.users().putNick(nick, idUser))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    public void updateAvatarFriend(String avatar, int idUser){
+        Completable.fromAction(() -> database.users().putAvatar(avatar, idUser))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
     public void updatePassword(String password){
         Completable.fromAction(() -> database.profile().putAvatar(password))
                 .subscribeOn(Schedulers.io())
@@ -143,6 +155,18 @@ public class LocalDB {
     public Maybe<List<TableChats>> getChats(){
         return database.chats()
                 .getChats()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+    public Maybe<TableChats> getChat(){
+        return database.chats()
+                .getChat()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+    public Maybe<TableFriends> getFriend(){
+        return database.friends()
+                .getFriend()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

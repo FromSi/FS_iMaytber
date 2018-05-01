@@ -59,6 +59,7 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
         ButterKnife.bind(this);
+        fab.hide(null);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
