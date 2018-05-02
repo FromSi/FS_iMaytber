@@ -19,6 +19,9 @@ public class GETLogin {
     @SerializedName("login")
     @Expose
     private String login;
+    @SerializedName("bio")
+    @Expose
+    private String bio;
 
     public String getNick() {
         return nick;
@@ -60,4 +63,11 @@ public class GETLogin {
         this.login = login;
     }
 
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
 }

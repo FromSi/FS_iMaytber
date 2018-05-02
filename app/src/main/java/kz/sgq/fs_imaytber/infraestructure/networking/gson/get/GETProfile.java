@@ -13,6 +13,9 @@ public class GETProfile {
     @SerializedName("avatar")
     @Expose
     private String avatar;
+    @SerializedName("bio")
+    @Expose
+    private String bio;
 
     public String getNick() {
         return nick;
@@ -38,4 +41,11 @@ public class GETProfile {
         this.avatar = avatar;
     }
 
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
 }

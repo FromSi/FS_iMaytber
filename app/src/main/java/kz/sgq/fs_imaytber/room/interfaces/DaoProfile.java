@@ -24,6 +24,9 @@ public interface DaoProfile {
     @Query("UPDATE `tableprofile` SET `avatar`=:avatar")
     void putAvatar(String avatar);
 
+    @Query("UPDATE `tableprofile` SET `bio`=:bio")
+    void putBio(String bio);
+
     @Query("UPDATE `tableprofile` SET `password`=:password")
     void putPassword(String password);
 

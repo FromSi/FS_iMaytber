@@ -24,6 +24,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
     private String content;
     private String nick;
     private String avatar;
+    private String bio;
     private String key;
     private String time;
     private int idmessages;
@@ -65,6 +66,11 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
             iduser = Integer.parseInt(remoteMessage.getData().get("iduser"));
             avatar = remoteMessage.getData().get("avatar");
             updateAvatar();
+        } else if (remoteMessage.getData().get("iduser") != null &&
+                remoteMessage.getData().get("bio") != null) {
+            iduser = Integer.parseInt(remoteMessage.getData().get("iduser"));
+            bio = remoteMessage.getData().get("bio");
+            updateBio();
         }
     }
 
@@ -91,6 +97,12 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
     private void updateAvatar() {
         Log.d("TagTestServiseFCM", "updateAvatar");
         localDB.updateAvatarFriend(avatar, iduser);
+        clear();
+    }
+
+    private void updateBio() {
+        Log.d("TagTestServiseFCM", "updateBio");
+        localDB.updateBioFriend(bio, iduser);
         clear();
     }
 

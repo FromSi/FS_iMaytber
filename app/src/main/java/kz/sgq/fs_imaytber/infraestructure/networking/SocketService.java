@@ -58,6 +58,9 @@ public interface SocketService {
     @PUT("/token")
     Completable putToken(@Query("iduser") int iduser, @Query("token") String token);
 
+    @PUT("/bio")
+    Completable putBio(@Query("iduser") int iduser, @Query("bio") String bio);
+
     @PUT("/password")
     Completable putPassword(@Query("login") String login, @Query("password") String password);
 }

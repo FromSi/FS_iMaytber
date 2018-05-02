@@ -154,6 +154,7 @@ public class HistoryPresenterImpl implements HistoryPresenter {
     }
 
     private void zipHandler() {
+        List<HistoryZIP> historyList = new ArrayList<>();
         view.clearHistory();
         for (int i = 0; i < model.getIdChatList().size(); i++) {
             Maybe.zip(model.getLocal().getDialog(model.getIdChatList().get(i)),
@@ -161,6 +162,7 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                     (messages, tableUsers) -> new HistoryZIP(tableUsers.getAvatar(),
                             tableUsers.getNick(),
                             tableUsers.getIdusers(),
+                            messages.getIdmessages(),
                             messages.getContent(),
                             messages.getTime()))
                     .subscribeOn(Schedulers.io())
@@ -174,7 +176,12 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                         @Override
                         public void onSuccess(HistoryZIP historyZIP) {
                             Log.d("TestTagMy", "Maybe" + 1);
-                            view.addHistory(historyZIP);
+                            historyList.add(historyZIP);
+                            if (model.getIdChatList().size() > 1)
+                                if (historyList.size() == model.getIdChatList().size())
+                                sortingMessage(historyList);
+                            else if (model.getIdChatList().size() == 1)
+                                    view.addHistory(historyZIP);
                         }
 
                         @Override
@@ -184,9 +191,37 @@ public class HistoryPresenterImpl implements HistoryPresenter {
 
                         @Override
                         public void onComplete() {
-
                         }
                     });
+        }
+    }
+
+    private void sortingMessage(List<HistoryZIP> list) {
+        int[] n = new int[list.size()];
+
+        for (int i = 0; i < list.size(); i++) {
+            n[i] = list.get(i).getIdMessage();
+        }
+
+        for (int i = 0; i < n.length - 1; i++) {
+            for (int j = 0; j < n.length - 1; j++) {
+                if (n[j] > n[j + 1]) {
+                    int a = n[j];
+                    n[j] = n[j + 1];
+                    n[j + 1] = a;
+                }
+            }
+        }
+
+        for (int i = 0; i < n.length; i++) {
+            List<HistoryZIP> fan = list;
+            for (int j = 0; j < fan.size(); j++) {
+                if (n[i] == fan.get(j).getIdMessage()) {
+                    view.addHistory(list.get(j));
+                    fan.remove(j);
+                    break;
+                }
+            }
         }
     }
 

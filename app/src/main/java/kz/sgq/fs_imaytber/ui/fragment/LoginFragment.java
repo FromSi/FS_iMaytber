@@ -118,6 +118,7 @@ public class LoginFragment extends Fragment implements LoginView {
         Intent intent = new Intent(getContext(), MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("fragment", true);
         startActivity(intent);
     }
 

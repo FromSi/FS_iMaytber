@@ -103,6 +103,12 @@ public class SocketIMaytber {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Completable putBio(int iduser, String bio) {
+        return socket.putBio(iduser, bio)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Completable putPassword(String login, String password) {
         return socket.putPassword(login, password)
                 .subscribeOn(Schedulers.io())

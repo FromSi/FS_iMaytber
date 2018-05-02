@@ -70,7 +70,8 @@ public class GsonToTable {
                 login.getAvatar(),
                 login.getNick(),
                 login.getLogin(),
-                login.getPassword());
+                login.getPassword(),
+                login.getBio());
     }
 
     public static TableProfile tableProfile(POSTUser login) {
@@ -78,19 +79,14 @@ public class GsonToTable {
                 login.getAvatar(),
                 login.getNick(),
                 login.getLogin(),
-                login.getPassword());
+                login.getPassword(),
+                null);
     }
-
-//    public static List<TableUsers> tableUsers(List<GETProfile> userList){
-//        List<TableUsers> list = new ArrayList<>();
-//        for (int i = 0; i < list.size(); i++) {
-//
-//        }
-//    }
 
     public static TableUsers tableUsers(GETProfile userList) {
         return new TableUsers(Integer.parseInt(userList.getIduser()),
                 userList.getAvatar(),
-                userList.getNick());
+                userList.getNick(),
+                userList.getBio());
     }
 }

@@ -69,15 +69,21 @@ public class MainActivity extends AppCompatActivity implements MainView {
         historyFragment = new HistoryFragment();
         friendFragment = new FriendFragment();
         settingsFragment = new SettingsFragment();
-        if (getSharedPreferences("local", MODE_PRIVATE)
-                .getBoolean("main_fragment", true)) {
-            navigationView.getMenu().getItem(0).setChecked(true);
-            Objects.requireNonNull(getSupportActionBar()).setTitle("Диалоги");
-            stepFragments(historyFragment);
-        } else {
+        if (getIntent().getBooleanExtra("fragment", false)){
             navigationView.getMenu().getItem(1).setChecked(true);
             Objects.requireNonNull(getSupportActionBar()).setTitle("Друзья");
             stepFragments(friendFragment);
+        } else {
+            if (getSharedPreferences("local", MODE_PRIVATE)
+                    .getBoolean("main_fragment", true)) {
+                navigationView.getMenu().getItem(0).setChecked(true);
+                Objects.requireNonNull(getSupportActionBar()).setTitle("Диалоги");
+                stepFragments(historyFragment);
+            } else {
+                navigationView.getMenu().getItem(1).setChecked(true);
+                Objects.requireNonNull(getSupportActionBar()).setTitle("Друзья");
+                stepFragments(friendFragment);
+            }
         }
     }
 

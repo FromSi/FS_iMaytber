@@ -2,6 +2,7 @@ package kz.sgq.fs_imaytber.ui.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -55,10 +56,13 @@ public class SettingsFragment extends Fragment implements SettingsView {
     RadioButton radioFriends;
     @BindView(R.id.avatar)
     CircleImageView avatar;
+    @BindView(R.id.bio)
+    TextView bio;
 
     private SettingsPresenter presenter;
     private SharedPreferences preferences;
     private Dialog dialogAvatar;
+    private Dialog dialogBio;
 
     private String baseURL;
     private String avatarURL;
@@ -87,6 +91,7 @@ public class SettingsFragment extends Fragment implements SettingsView {
         preferences = Objects.requireNonNull(getContext())
                 .getSharedPreferences("local", Context.MODE_PRIVATE);
         dialogAvatar = initDialogAvatar(getContext());
+        dialogBio = initDialogBio(getContext());
         init();
     }
 
@@ -198,6 +203,16 @@ public class SettingsFragment extends Fragment implements SettingsView {
         baseURL = avatarURL;
     }
 
+    @OnClick(R.id.bio)
+    public void onClickBio(){
+        dialogBio.show();
+    }
+
+    @Override
+    public void setBio(String bio) {
+        this.bio.setText(bio);
+    }
+
     @Override
     public String getUrlAvatar() {
         return baseURL;
@@ -223,6 +238,21 @@ public class SettingsFragment extends Fragment implements SettingsView {
     public void onPause() {
         super.onPause();
         presenter.onDestroy();
+    }
+
+    private Dialog initDialogBio(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View view = getLayoutInflater().inflate(R.layout.dialog_bio, null);
+        TextView bio = view.findViewById(R.id.bio);
+
+        builder.setView(view)
+                .setPositiveButton(R.string.ok, (dialog, id) -> {
+                    if (!this.bio.getText().toString().equals(bio.getText().toString()) &&
+                            !bio.getText().toString().isEmpty())
+                        presenter.onClickBio(bio.getText().toString());
+                })
+        .setNegativeButton(R.string.cancel, (dialog, which) -> {});
+        return builder.create();
     }
 
     private Dialog initDialogAvatar(Context context) {

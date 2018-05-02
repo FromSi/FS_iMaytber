@@ -11,13 +11,16 @@ public class TableProfile {
     String nick;
     String login;
     String password;
+    String bio;
 
-    public TableProfile(int iduser, String avatar, String nick, String login, String password) {
+    public TableProfile(int iduser, String avatar, String nick, String login, String password,
+                        String bio) {
         this.iduser = iduser;
         this.avatar = avatar;
         this.nick = nick;
         this.login = login;
         this.password = password;
+        this.bio = bio;
     }
 
     public int getIduser() {
@@ -58,5 +61,13 @@ public class TableProfile {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 }

@@ -25,4 +25,8 @@
     <string name="notification">Уведомления</string>
     <string name="no_dialogs">Нет диалогов</string>
     <string name="no_contacts">Нет контактов</string>
+    <string name="profile">Профиль</string>
+    <string name="no_bio">Пустой статус</string>
+    <string name="bio_help">Вы можете добавить несколько строк о себе. Все, кто смотрит ваш профиль, будут видеть этот текст</string>
+    <string name="bio_hint">О себе</string>
 </resources>

@@ -132,6 +132,18 @@ public class LocalDB {
                 .subscribe();
     }
 
+    public void updateBioFriend(String bio, int idUser){
+        Completable.fromAction(() -> database.users().putBio(bio, idUser))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    public void updateBio(String bio){
+        Completable.fromAction(() -> database.profile().putBio(bio))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
     public void updateAvatarFriend(String avatar, int idUser){
         Completable.fromAction(() -> database.users().putAvatar(avatar, idUser))
                 .subscribeOn(Schedulers.io())

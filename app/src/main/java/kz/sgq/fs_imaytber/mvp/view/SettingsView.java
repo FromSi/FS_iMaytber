@@ -5,6 +5,7 @@ public interface SettingsView {
     void setNick(String nick);
     void setPassword();
     void setAvatar(String uri);
+    void setBio(String bio);
     String getUrlAvatar();
     void showSuccess();
     void showError();

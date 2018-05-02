@@ -9,8 +9,9 @@ public class TableUsers {
     int idusers;
     String avatar;
     String nick;
+    String bio;
 
-    public TableUsers(int idusers, String avatar, String nick) {
+    public TableUsers(int idusers, String avatar, String nick, String bio) {
         this.idusers = idusers;
         this.avatar = avatar;
         this.nick = nick;
@@ -38,5 +39,13 @@ public class TableUsers {
 
     public void setNick(String nick) {
         this.nick = nick;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 }

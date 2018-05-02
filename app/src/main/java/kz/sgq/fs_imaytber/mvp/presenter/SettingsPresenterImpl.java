@@ -33,6 +33,8 @@ public class SettingsPresenterImpl implements SettingsPresenter {
                         .subscribeWith(new DisposableSubscriber<TableProfile>() {
                             @Override
                             public void onNext(TableProfile profile) {
+                                if (profile.getBio() != null)
+                                    view.setBio(profile.getBio());
                                 view.setAvatar(profile.getAvatar());
                                 view.setProfile(profile.getNick(),
                                         "Логин: " + profile.getLogin(),
@@ -75,11 +77,36 @@ public class SettingsPresenterImpl implements SettingsPresenter {
                     public void onComplete() {
                         model.getLocal().updateNick(nick);
                         view.setNick(nick);
+                        view.showSuccess();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        view.showError();
+                    }
+                });
+    }
 
+    @Override
+    public void onClickBio(String bio) {
+        model.getSocket()
+                .putBio(model.getIdUser(), bio)
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        model.getLocal().updateBio(bio);
+                        view.setBio(bio);
+                        view.showSuccess();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        view.showError();
                     }
                 });
     }
@@ -98,11 +125,12 @@ public class SettingsPresenterImpl implements SettingsPresenter {
                     public void onComplete() {
                         model.getLocal().updatePassword(password);
                         view.setPassword();
+                        view.showSuccess();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        view.showError();
                     }
                 });
     }
@@ -126,7 +154,7 @@ public class SettingsPresenterImpl implements SettingsPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        view.showError();
                     }
                 });
     }
