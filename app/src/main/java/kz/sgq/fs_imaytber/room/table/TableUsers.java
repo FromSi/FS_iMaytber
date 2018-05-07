@@ -10,11 +10,14 @@ public class TableUsers {
     String avatar;
     String nick;
     String bio;
+    boolean notif;
 
-    public TableUsers(int idusers, String avatar, String nick, String bio) {
+    public TableUsers(int idusers, String avatar, String nick, String bio, boolean notif) {
         this.idusers = idusers;
         this.avatar = avatar;
         this.nick = nick;
+        this.bio = bio;
+        this.notif = notif;
     }
 
     public int getIdusers() {
@@ -47,5 +50,13 @@ public class TableUsers {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public boolean isNotif() {
+        return notif;
+    }
+
+    public void setNotif(boolean notif) {
+        this.notif = notif;
     }
 }

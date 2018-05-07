@@ -16,6 +16,9 @@ public class GETChats {
     @SerializedName("key")
     @Expose
     private String key;
+    @SerializedName("read")
+    @Expose
+    private String read;
 
     public String getIdchat() {
         return idchat;
@@ -49,4 +52,11 @@ public class GETChats {
         this.key = key;
     }
 
+    public String getRead() {
+        return read;
+    }
+
+    public void setRead(String read) {
+        this.read = read;
+    }
 }

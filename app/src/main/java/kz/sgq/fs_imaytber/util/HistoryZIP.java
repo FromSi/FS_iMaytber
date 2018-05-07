@@ -7,14 +7,16 @@ public class HistoryZIP {
     private int idMessage;
     private String content;
     private String time;
+    private int read;
 
-    public HistoryZIP(String avatar, String nick, int idUser, int idMessage, String content, String time) {
+    public HistoryZIP(String avatar, String nick, int idUser, int idMessage, String content, String time, int read) {
         this.avatar = avatar;
         this.nick = nick;
         this.idUser = idUser;
         this.idMessage = idMessage;
         this.content = content;
         this.time = time;
+        this.read = read;
     }
 
     public String getAvatar() {
@@ -63,5 +65,13 @@ public class HistoryZIP {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public int getRead() {
+        return read;
+    }
+
+    public void setRead(int read) {
+        this.read = read;
     }
 }

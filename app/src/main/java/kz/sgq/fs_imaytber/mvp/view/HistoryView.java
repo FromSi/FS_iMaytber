@@ -1,7 +1,5 @@
 package kz.sgq.fs_imaytber.mvp.view;
 
-import java.util.List;
-
 import kz.sgq.fs_imaytber.util.HistoryZIP;
 
 public interface HistoryView {
@@ -9,6 +7,11 @@ public interface HistoryView {
 
     void clearHistory();
 
+    void setPosition();
+
+    void setDialogUser(String avatar, String nick, String login, String bio, boolean switchBool);
+
     void startDialog(int idUser_1, int idUser_2);
+
     void showNullItem();
 }

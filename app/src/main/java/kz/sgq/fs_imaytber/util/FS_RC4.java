@@ -10,7 +10,7 @@ public class FS_RC4 {
     private int max;
 
     public FS_RC4(String KEY, String CONTENT) {
-        max = Math.max(CONTENT.length(),KEY.length());
+        max = Math.max(CONTENT.length(), KEY.length());
         C = new int[max];
         K = new int[max];
         this.KEY = new int[max];
@@ -20,17 +20,17 @@ public class FS_RC4 {
         preparation();
     }
 
-    public String start(){
+    public String start() {
         StringBuilder content = new StringBuilder();
         int symbol;
         for (int i = 0; i < this.KEY.length; i++) {
             symbol = this.KEY[i] ^ this.CONTENT[i];
-            content.append((char)symbol);
+            content.append((char) symbol);
         }
         return content.toString();
     }
 
-    private void init(String KEY, String CONTENT){
+    private void init(String KEY, String CONTENT) {
         for (int i = 0; i < max; i++) {
             C[i] = i;
             K[i] = KEY.charAt(i % KEY.length());
@@ -38,7 +38,7 @@ public class FS_RC4 {
         }
     }
 
-    private void generates(){
+    private void generates() {
         int j = 0;
         for (int i = 0; i < max; i++) {
             j = (j + C[i] + K[i]) % max;
@@ -49,7 +49,7 @@ public class FS_RC4 {
         }
     }
 
-    private void preparation(){
+    private void preparation() {
         int j = 0;
         int m = 0;
         for (int i = 0; i < max; i++) {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kz.sgq.fs_imaytber.mvp.model.interfaces.HistoryModel;
-import kz.sgq.fs_imaytber.util.HistoryZIP;
 import kz.sgq.fs_imaytber.util.LocalDB;
 
 public class HistoryModelImpl implements HistoryModel {
@@ -12,11 +11,13 @@ public class HistoryModelImpl implements HistoryModel {
     private int idUser;
     private List<Integer> idListUser_2;
     private List<Integer> idChat;
+    private List<Integer> readList;
 
     public HistoryModelImpl() {
         localDB = new LocalDB();
         idListUser_2 = new ArrayList<>();
         idChat = new ArrayList<>();
+        readList = new ArrayList<>();
     }
 
     @Override
@@ -40,6 +41,11 @@ public class HistoryModelImpl implements HistoryModel {
     }
 
     @Override
+    public List<Integer> getReadList() {
+        return readList;
+    }
+
+    @Override
     public void clearListIdUser_2() {
         idListUser_2.clear();
     }
@@ -49,15 +55,25 @@ public class HistoryModelImpl implements HistoryModel {
         idChat.clear();
     }
 
+    @Override
+    public void clearReadList() {
+        readList.clear();
+    }
+
 
     @Override
     public void addListIdUser_2(int idUser) {
-        idListUser_2.add(idUser);
+        this.idListUser_2.add(idUser);
     }
 
     @Override
     public void addIdChatList(int idChat) {
         this.idChat.add(idChat);
+    }
+
+    @Override
+    public void addReadList(int read) {
+        this.readList.add(read);
     }
 
 

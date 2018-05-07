@@ -1,7 +1,5 @@
 package kz.sgq.fs_imaytber.mvp.presenter;
 
-import android.util.Log;
-
 import io.reactivex.CompletableObserver;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -52,7 +50,6 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onDestroy() {
-        Log.d("ExitAndDestroy", this.getClass().getName());
         composite.clear();
         view = null;
         model = null;
@@ -65,8 +62,8 @@ public class MainPresenterImpl implements MainPresenter {
                         .subscribeWith(new DisposableSubscriber<TableProfile>() {
                             @Override
                             public void onNext(TableProfile profile) {
-                                Log.d("testNull", profile.getNick());
                                 model.setIdUser(profile.getIduser());
+                                model.initUsers(profile.getIduser());
                                 view.setNick(profile.getNick());
                                 view.setLogin(profile.getLogin() + "#" + profile.getIduser());
                                 view.setAvatar(profile.getAvatar());

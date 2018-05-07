@@ -1,21 +1,22 @@
 package kz.sgq.fs_imaytber.mvp.presenter;
 
-import android.util.Log;
-
 import java.util.Date;
 import java.util.List;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.MaybeObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subscribers.DisposableSubscriber;
+import kz.sgq.fs_imaytber.infraestructure.networking.gson.post.POSTFriend;
 import kz.sgq.fs_imaytber.infraestructure.networking.gson.post.POSTMessage;
 import kz.sgq.fs_imaytber.mvp.model.DialogModelImpl;
 import kz.sgq.fs_imaytber.mvp.model.interfaces.DialogModel;
 import kz.sgq.fs_imaytber.mvp.presenter.interfaces.DialogPresenter;
 import kz.sgq.fs_imaytber.mvp.view.DialogView;
 import kz.sgq.fs_imaytber.room.table.TableChats;
+import kz.sgq.fs_imaytber.room.table.TableFriends;
 import kz.sgq.fs_imaytber.room.table.TableMessages;
 import kz.sgq.fs_imaytber.room.table.TableUsers;
 import kz.sgq.fs_imaytber.util.FS_RC4;
@@ -129,10 +130,11 @@ public class DialogPresenterImpl implements DialogPresenter {
                                                                     messagesList.get(i)
                                                                             .getContent(),
                                                                     messagesList.get(i)
-                                                            .getTime())),
+                                                                            .getTime())),
                                                     MessageCondition.DONE);
                                         }
                                     }
+                                    localReadCheck();
                                 }
 
                                 @Override
@@ -146,6 +148,39 @@ public class DialogPresenterImpl implements DialogPresenter {
                                 }
                             })
             );
+    }
+
+
+    @Override
+    public void getUser() {
+        model.getLocal()
+                .getUser(model.getIdUser_2())
+                .subscribe(new MaybeObserver<TableUsers>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(TableUsers tableUsers) {
+                        view.showDialogUser(model.getIdUser_2());
+                        view.setDialogUser(tableUsers.getAvatar(),
+                                tableUsers.getNick(),
+                                "ID " + tableUsers.getIdusers(),
+                                tableUsers.getBio(),
+                                tableUsers.isNotif());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     private void initAvatarAndNick() {
@@ -189,12 +224,173 @@ public class DialogPresenterImpl implements DialogPresenter {
         }
     }
 
+    private void handlerRead() {
+        model.getSocket()
+                .putRead(model.getIdChat(), 0)
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        if (d != null) {
+                            model.getLocal()
+                                    .updateChatRead(0, model.getIdChat());
+                            model.setRead(0);
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
+    private void localReadCheck() {
+        model.getLocal()
+                .getIdChat(model.getIdChat())
+                .subscribe(new MaybeObserver<TableChats>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(TableChats chats) {
+                        if (chats.getRead() != 0) {
+                            model.setRead(chats.getRead());
+                            handlerRead();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
     @Override
-    public void handlerMessage() {
+    public void handlerReadMessage() {
         String content = view.getText();
         String time = new Date().toString();
         int idMessage = view.addMessage(new Message(model.getIdUser_2(),
                 content, time));
+        if (model.getRead() != 0)
+            model.getSocket()
+                    .putRead(model.getIdChat(), 0)
+                    .subscribe(new CompletableObserver() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            model.getLocal()
+                                    .updateChatRead(0, model.getIdChat());
+                            model.setRead(0);
+                            handlerMessage(content, time, idMessage);
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            view.uploadCondition(idMessage, MessageCondition.ERROR);
+                        }
+                    });
+        else
+            handlerMessage(content, time, idMessage);
+    }
+
+    @Override
+    public void deleteFriend() {
+        model.getLocal()
+                .getFriend(model.getIdUser_2())
+                .subscribe(new MaybeObserver<TableFriends>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(TableFriends tableFriends) {
+                        deleteSocketFriend(tableFriends.getIdfriends());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    @Override
+    public void addFriend() {
+        model.getSocket()
+                .postFriend(model.getIdUser_1(),
+                        model.getIdUser_2())
+                .subscribe(new Observer<POSTFriend>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(POSTFriend friend) {
+                        model.getLocal()
+                                .insertFriends(GsonToTable.tableFriends(friend));
+                        view.showAddFriend();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private void deleteSocketFriend(int idFriends) {
+        model.getSocket()
+                .deleteFriend(idFriends)
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        model.getLocal()
+                                .deleteFriend(idFriends);
+                        view.showDeleteFriend();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+    }
+
+    private void handlerMessage(String content, String time, int idMessage) {
         model.getSocket()
                 .postMessage(model.getIdUser_1(),
                         model.getIdUser_2(),
@@ -218,7 +414,8 @@ public class DialogPresenterImpl implements DialogPresenter {
                                             .parseInt(message.getIdchat()),
                                             model.getIdUser_1(),
                                             model.getIdUser_2(),
-                                            message.getKey()));
+                                            message.getKey(),
+                                            0));
                         }
 
                         view.uploadCondition(idMessage, MessageCondition.DONE);
@@ -244,6 +441,12 @@ public class DialogPresenterImpl implements DialogPresenter {
 
                     }
                 });
+    }
+
+    @Override
+    public void setNotif(int idUser, boolean notif) {
+        model.getLocal()
+                .updateNotif(notif, idUser);
     }
 
     @Override

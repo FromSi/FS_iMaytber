@@ -1,7 +1,5 @@
 package kz.sgq.fs_imaytber.mvp.presenter;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +8,6 @@ import io.reactivex.MaybeObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DisposableMaybeObserver;
-import io.reactivex.observers.ResourceMaybeObserver;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import kz.sgq.fs_imaytber.mvp.model.HistoryModelImpl;
@@ -30,11 +24,9 @@ public class HistoryPresenterImpl implements HistoryPresenter {
     private HistoryView view;
     private HistoryModel model;
     private CompositeDisposable composite;
-    private int size = 0;
 
     public HistoryPresenterImpl(HistoryView view) {
         this.view = view;
-        Log.d("DestroyPause", "HistoryPresenterImpl");
         model = new HistoryModelImpl();
         composite = new CompositeDisposable();
         checkItem();
@@ -76,7 +68,6 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                     public void onNext(TableProfile profile) {
                         model.setIdUser(profile.getIduser());
                         composite.clear();
-//                        handlerChats();
                         handlerMessage();
                     }
 
@@ -97,18 +88,17 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                 .subscribeWith(new DisposableSubscriber<TableMessages>() {
                     @Override
                     public void onNext(TableMessages messages) {
-                        Log.d("TestTagMy2", "onNext");
                         handlerChats();
                     }
 
                     @Override
                     public void onError(Throwable t) {
-                        Log.d("TestTagMy2", "onError");
+
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.d("TestTagMy2", "onComplete");
+
                     }
                 }));
     }
@@ -125,19 +115,24 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                     @Override
                     public void onSuccess(List<TableChats> chatsList) {
                         if (chatsList.size() != model.getIdChatList().size()) {
-                            Log.d("TestTagMy2", "onSuccess handlerChats");
                             model.clearListIdUser_2();
                             model.clearListIdChat();
+                            model.clearReadList();
                             for (int i = 0; i < chatsList.size(); i++) {
                                 if (model.getIdUser() != chatsList.get(i).getIduser_1())
                                     model.addListIdUser_2(chatsList.get(i).getIduser_1());
                                 else
                                     model.addListIdUser_2(chatsList.get(i).getIduser_2());
 
+                                model.addReadList(chatsList.get(i).getRead());
                                 model.addIdChatList(chatsList.get(i).getIdchats());
                             }
+                        } else {
+                            model.clearReadList();
+                            for (int i = 0; i < chatsList.size(); i++) {
+                                model.addReadList(chatsList.get(i).getRead());
+                            }
                         }
-                        Log.d("TestTagMy2", "zipHandler");
                         zipHandler();
                     }
 
@@ -157,6 +152,7 @@ public class HistoryPresenterImpl implements HistoryPresenter {
         List<HistoryZIP> historyList = new ArrayList<>();
         view.clearHistory();
         for (int i = 0; i < model.getIdChatList().size(); i++) {
+            final int index = i;
             Maybe.zip(model.getLocal().getDialog(model.getIdChatList().get(i)),
                     model.getLocal().getUser(model.getListIdUser_2().get(i)),
                     (messages, tableUsers) -> new HistoryZIP(tableUsers.getAvatar(),
@@ -164,7 +160,8 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                             tableUsers.getIdusers(),
                             messages.getIdmessages(),
                             messages.getContent(),
-                            messages.getTime()))
+                            messages.getTime(),
+                            model.getReadList().get(index)))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new MaybeObserver<HistoryZIP>() {
@@ -175,13 +172,14 @@ public class HistoryPresenterImpl implements HistoryPresenter {
 
                         @Override
                         public void onSuccess(HistoryZIP historyZIP) {
-                            Log.d("TestTagMy", "Maybe" + 1);
                             historyList.add(historyZIP);
-                            if (model.getIdChatList().size() > 1)
+                            if (model.getIdChatList().size() > 1) {
                                 if (historyList.size() == model.getIdChatList().size())
-                                sortingMessage(historyList);
-                            else if (model.getIdChatList().size() == 1)
-                                    view.addHistory(historyZIP);
+                                    sortingMessage(historyList);
+                            } else if (model.getIdChatList().size() == 1) {
+                                view.addHistory(historyZIP);
+                            }
+
                         }
 
                         @Override
@@ -194,6 +192,37 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                         }
                     });
         }
+    }
+
+    @Override
+    public void getUser(int idUser) {
+        model.getLocal()
+                .getUser(idUser)
+                .subscribe(new MaybeObserver<TableUsers>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(TableUsers tableUsers) {
+                        view.setDialogUser(tableUsers.getAvatar(),
+                                tableUsers.getNick(),
+                                "ID " + tableUsers.getIdusers(),
+                                tableUsers.getBio(),
+                                false);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     private void sortingMessage(List<HistoryZIP> list) {
@@ -223,6 +252,7 @@ public class HistoryPresenterImpl implements HistoryPresenter {
                 }
             }
         }
+        view.setPosition();
     }
 
     @Override

@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.MaybeObserver;
-import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import kz.sgq.fs_imaytber.mvp.model.interfaces.DialogModel;
 import kz.sgq.fs_imaytber.room.table.TableChats;
-import kz.sgq.fs_imaytber.room.table.TableUsers;
 import kz.sgq.fs_imaytber.util.LocalDB;
 import kz.sgq.fs_imaytber.util.SocketIMaytber;
 
@@ -17,13 +15,14 @@ public class DialogModelImpl implements DialogModel {
     private SocketIMaytber socket;
     private int idUser_1;
     private int idUser_2;
+    private int read;
     private int idChat = 0;
     private List<Integer> idMessageList;
     private String key;
     private String avatar;
     private String nick;
 
-    public DialogModelImpl(int idUser_1,int idUser_2) {
+    public DialogModelImpl(int idUser_1, int idUser_2) {
         localDB = new LocalDB();
         socket = new SocketIMaytber();
         this.idUser_1 = idUser_1;
@@ -32,7 +31,7 @@ public class DialogModelImpl implements DialogModel {
         initKey();
     }
 
-    private void initKey(){
+    private void initKey() {
         localDB.getChatKey(idUser_2)
                 .subscribe(new MaybeObserver<TableChats>() {
                     @Override
@@ -99,7 +98,7 @@ public class DialogModelImpl implements DialogModel {
 
     @Override
     public void setKey(String key) {
-        this.key= key;
+        this.key = key;
     }
 
     @Override
@@ -125,6 +124,16 @@ public class DialogModelImpl implements DialogModel {
     @Override
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    @Override
+    public void setRead(int read) {
+        this.read = read;
+    }
+
+    @Override
+    public int getRead() {
+        return read;
     }
 
 }

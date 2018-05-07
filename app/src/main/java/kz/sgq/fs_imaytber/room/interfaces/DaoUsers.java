@@ -26,6 +26,9 @@ public interface DaoUsers {
     @Query("UPDATE `tableusers` SET `avatar`=:avatar WHERE `idusers`=:idUser")
     void putAvatar(String avatar, int idUser);
 
+    @Query("UPDATE `tableusers` SET `notif`=:notif WHERE `idusers`=:idUser")
+    void putNotif(boolean notif, int idUser);
+
     @Query("UPDATE `tableusers` SET `bio`=:bio WHERE `idusers`=:idUser")
     void putBio(String bio, int idUser);
 

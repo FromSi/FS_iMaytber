@@ -8,7 +8,6 @@ import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import kz.sgq.fs_imaytber.room.table.TableChats;
 
 @Dao
@@ -36,6 +35,9 @@ public interface DaoChats {
 
     @Query("UPDATE `tablechats` SET `key`=:key WHERE `iduser_1`=:idUser OR `iduser_2`=:idUser")
     void putKey(String key, int idUser);
+
+    @Query("UPDATE `tablechats` SET `read`=:read WHERE `idchats`=:idChat")
+    void putRead(int read, int idChat);
 
     @Query("DELETE FROM `tablechats`")
     void delete();

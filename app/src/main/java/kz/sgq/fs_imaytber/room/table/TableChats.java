@@ -10,12 +10,14 @@ public class TableChats {
     int iduser_1;
     int iduser_2;
     String key;
+    int read;
 
-    public TableChats(int idchats, int iduser_1, int iduser_2, String key) {
+    public TableChats(int idchats, int iduser_1, int iduser_2, String key, int read) {
         this.idchats = idchats;
         this.iduser_1 = iduser_1;
         this.iduser_2 = iduser_2;
         this.key = key;
+        this.read = read;
     }
 
     public int getIdchats() {
@@ -48,5 +50,13 @@ public class TableChats {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public int getRead() {
+        return read;
+    }
+
+    public void setRead(int read) {
+        this.read = read;
     }
 }

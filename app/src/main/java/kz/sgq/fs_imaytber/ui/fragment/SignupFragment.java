@@ -12,7 +12,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -168,7 +167,6 @@ public class SignupFragment extends Fragment implements SignupView {
             storage.setBorderWidth(0);
             setAvatar(R.drawable.def1);
             urlAvatar = "def1";
-            Log.d("TestTagSize", String.valueOf("def1".length()));
         });
 
         def2.setOnClickListener(v -> {

@@ -24,7 +24,8 @@ public class GsonToTable {
             list.add(new TableChats(Integer.parseInt(chatsList.get(i).getIdchat()),
                     Integer.parseInt(chatsList.get(i).getIduser1()),
                     Integer.parseInt(chatsList.get(i).getIduser2()),
-                    chatsList.get(i).getKey()));
+                    chatsList.get(i).getKey(),
+                    Integer.parseInt(chatsList.get(i).getRead())));
         }
         return list;
     }
@@ -87,6 +88,7 @@ public class GsonToTable {
         return new TableUsers(Integer.parseInt(userList.getIduser()),
                 userList.getAvatar(),
                 userList.getNick(),
-                userList.getBio());
+                userList.getBio(),
+                true);
     }
 }

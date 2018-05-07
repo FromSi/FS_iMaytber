@@ -5,13 +5,19 @@
     <string name="cancel">Отмена</string>
     <string name="ok">Принять</string>
     <string name="exit">Вы точно хотите выйти из аккаунта?</string>
-    <string name="id_user">#</string>
+    <string name="id_user">ID</string>
     <string name="loading">Загрузка</string>
     <string name="repeat">Повторить</string>
     <string name="error_nick">Вы ввели мало символов</string>
     <string name="error_login">Вы ввели мало символов</string>
     <string name="error_password">Вы ввели слабый пароль</string>
     <string name="error_exit">Экстренный выход</string>
+    <string name="add_friend">Добавить</string>
+    <string name="delete_friend">Удалить</string>
+    <string name="delete_friend_dialog">Вы точно хотите удалить пользователя из контактов?</string>
+
+    <string name="toast_delete_friend">Пользователь удален из контактов</string>
+    <string name="toast_add_friend">Пользователь добавлен в контакты</string>
 
     <string name="snacbar_">Загрузка</string>
     <string name="snacbar_add_friend">Ошибка при добавлении</string>
@@ -26,7 +32,7 @@
     <string name="no_dialogs">Нет диалогов</string>
     <string name="no_contacts">Нет контактов</string>
     <string name="profile">Профиль</string>
-    <string name="no_bio">Пустой статус</string>
     <string name="bio_help">Вы можете добавить несколько строк о себе. Все, кто смотрит ваш профиль, будут видеть этот текст</string>
     <string name="bio_hint">О себе</string>
+    <string name="bio_def">Нет информации</string>
 </resources>

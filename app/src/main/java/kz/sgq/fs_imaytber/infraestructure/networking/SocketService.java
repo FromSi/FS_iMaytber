@@ -12,12 +12,16 @@ import kz.sgq.fs_imaytber.infraestructure.networking.gson.get.GETProfile;
 import kz.sgq.fs_imaytber.infraestructure.networking.gson.post.POSTFriend;
 import kz.sgq.fs_imaytber.infraestructure.networking.gson.post.POSTMessage;
 import kz.sgq.fs_imaytber.infraestructure.networking.gson.post.POSTUser;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface SocketService {
+    @DELETE("/friend")
+    Completable deleteFriend(@Query("idfriends") int idfriends);
+
     @GET("/friend")
     Observable<List<GETFriend>> getFriend(@Query("iduser") int iduser);
 
@@ -63,4 +67,7 @@ public interface SocketService {
 
     @PUT("/password")
     Completable putPassword(@Query("login") String login, @Query("password") String password);
+
+    @PUT("/read")
+    Completable putRead(@Query("idchats") int idchats, @Query("read") int read);
 }

@@ -1,5 +1,6 @@
 package kz.sgq.fs_imaytber.ui.activity;
 
+import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +27,23 @@ public class LoginActivity extends AppCompatActivity implements OnSelectedButton
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         setupViewPager();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putBoolean("notif", false)
+                .apply();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putBoolean("notif", true)
+                .apply();
     }
 
     private void setupViewPager() {
@@ -45,5 +63,11 @@ public class LoginActivity extends AppCompatActivity implements OnSelectedButton
     @Override
     public void onClickSignup() {
         viewPager.setCurrentItem(0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 }

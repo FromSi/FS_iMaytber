@@ -2,26 +2,24 @@ package kz.sgq.fs_imaytber.ui.fragment;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -36,6 +34,7 @@ import kz.sgq.fs_imaytber.mvp.view.FriendView;
 import kz.sgq.fs_imaytber.room.table.TableUsers;
 import kz.sgq.fs_imaytber.ui.activity.DialogActivity;
 import kz.sgq.fs_imaytber.ui.adapters.FriendAdapter;
+import kz.sgq.fs_imaytber.util.interfaces.OnSelectedDialogClick;
 
 public class FriendFragment extends Fragment implements FriendView {
 
@@ -43,14 +42,19 @@ public class FriendFragment extends Fragment implements FriendView {
     RecyclerView recyclerView;
     @BindView(R.id.nullItem)
     LinearLayout nullItem;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+
+    private CircleImageView avatar;
+    private TextView nick;
+    private TextView login;
+    private TextView bio;
+    private Switch notif;
 
     private FriendAdapter adapter;
 
     private Dialog addFriend;
     private ProgressDialog loading;
     private Dialog friendDialog;
+    private Dialog deleteDialog;
 
     private FriendPresenter presenter;
     private View view;
@@ -75,32 +79,39 @@ public class FriendFragment extends Fragment implements FriendView {
         onClickListenerAdapter();
     }
 
+    private Dialog createDialogDelete(int idUser){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.delete_friend_dialog)
+                .setPositiveButton(R.string.delete_friend, (dialog, id) ->                     presenter.deleteFriend(idUser))
+                .setNegativeButton(R.string.cancel, (dialog, id) -> {
+                });
+        return builder.create();
+    }
+
     private Dialog dialogFriend(int idUser) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
         View view = getLayoutInflater().inflate(R.layout.dialog_user, null);
-        CircleImageView avatar = view.findViewById(R.id.avatar);
-        TextView nick = view.findViewById(R.id.nick);
-        TextView login = view.findViewById(R.id.login);
-        TextView bio = view.findViewById(R.id.bio);
-        Switch notif = view.findViewById(R.id.notif);
-        notif.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-            }
+        avatar = view.findViewById(R.id.avatar);
+        nick = view.findViewById(R.id.nick);
+        login = view.findViewById(R.id.login);
+        bio = view.findViewById(R.id.bio);
+        notif = view.findViewById(R.id.notif);
+        presenter.getUser(idUser);
+        notif.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (notif.isChecked())
+                presenter.setNotif(idUser, true);
+            else
+                presenter.setNotif(idUser, false);
         });
         builder.setView(view)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
 
-                    }
                 });
         AlertDialog dialog = builder.create();
-        view.findViewById(R.id.fab).setOnClickListener(v ->{
+        view.findViewById(R.id.fab).setOnClickListener(v -> {
             dialog.dismiss();
             presenter.startDialog(idUser);
-        } );
+        });
         return dialog;
     }
 
@@ -113,7 +124,6 @@ public class FriendFragment extends Fragment implements FriendView {
     public void onStart() {
         super.onStart();
         presenter = new FriendPresenterImpl(this);
-        Log.d("onCreateView123", "onStart");
     }
 
     private void init() {
@@ -125,9 +135,23 @@ public class FriendFragment extends Fragment implements FriendView {
     }
 
     private void onClickListenerAdapter() {
-        adapter.setOnSelectedDialogClick(idUser -> {
-            friendDialog = dialogFriend(idUser);
-            friendDialog.show();
+        adapter.setOnSelectedDialogClick(new OnSelectedDialogClick() {
+            @Override
+            public void onClick(int idUser) {
+
+            }
+
+            @Override
+            public void onClickDialog(int idUser) {
+                friendDialog = dialogFriend(idUser);
+                friendDialog.show();
+            }
+
+            @Override
+            public void onClickDelete(int idUser) {
+                deleteDialog = createDialogDelete(idUser);
+                deleteDialog.show();
+            }
         });
     }
 
@@ -141,6 +165,11 @@ public class FriendFragment extends Fragment implements FriendView {
     public void addFriend(TableUsers user) {
         nullItem.setVisibility(View.GONE);
         adapter.addFriend(user);
+    }
+
+    @Override
+    public void deleteFriend(int idUser) {
+        adapter.deleteFriend(idUser);
     }
 
     @Override
@@ -195,5 +224,34 @@ public class FriendFragment extends Fragment implements FriendView {
     public void showNullItem() {
         nullItem.setVisibility(View.VISIBLE);
 
+    }
+
+    @Override
+    public void setDialogUser(String avatar, String nick, String login,
+                              String bio, boolean switchBool) {
+        switch (avatar) {
+            case "def1":
+                this.avatar.setImageDrawable(getResources().getDrawable(R.drawable.def1));
+                break;
+            case "def2":
+                this.avatar.setImageDrawable(getResources().getDrawable(R.drawable.def2));
+                break;
+            case "def3":
+                this.avatar.setImageDrawable(getResources().getDrawable(R.drawable.def3));
+                break;
+            case "def4":
+                this.avatar.setImageDrawable(getResources().getDrawable(R.drawable.def4));
+                break;
+            default:
+                Picasso.get()
+                        .load(avatar)
+                        .into(this.avatar);
+                break;
+        }
+        this.nick.setText(nick);
+        this.login.setText(login);
+        this.notif.setChecked(switchBool);
+        if (bio != null)
+            this.bio.setText(bio);
     }
 }

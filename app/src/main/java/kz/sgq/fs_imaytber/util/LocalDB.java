@@ -5,7 +5,6 @@ import java.util.List;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import kz.sgq.fs_imaytber.application.App;
@@ -77,86 +76,104 @@ public class LocalDB {
                 .subscribe();
     }
 
-    public void deleteChats(){
+    public void deleteChats() {
         Completable.fromAction(() -> database.chats().delete())
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void deleteFriends(){
+    public void deleteFriends() {
         Completable.fromAction(() -> database.friends().delete())
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void deleteMessage(){
+    public void deleteMessage() {
         Completable.fromAction(() -> database.message().delete())
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
 
-    public void deleteProfile(){
+    public void deleteProfile() {
         Completable.fromAction(() -> database.profile().delete())
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void deleteUsers(){
+    public void deleteUsers() {
         Completable.fromAction(() -> database.users().delete())
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updateAvatar(String avatar){
+    public void updateAvatar(String avatar) {
         Completable.fromAction(() -> database.profile().putAvatar(avatar))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updateKey(String key, int idUser){
+    public void updateKey(String key, int idUser) {
         Completable.fromAction(() -> database.chats().putKey(key, idUser))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updateNick(String nick){
+    public void updateNotif(boolean notif, int idUser) {
+        Completable.fromAction(() -> database.users().putNotif(notif, idUser))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    public void updateNick(String nick) {
         Completable.fromAction(() -> database.profile().putNick(nick))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updateNickFriend(String nick, int idUser){
+    public void updateNickFriend(String nick, int idUser) {
         Completable.fromAction(() -> database.users().putNick(nick, idUser))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updateBioFriend(String bio, int idUser){
+    public void updateBioFriend(String bio, int idUser) {
         Completable.fromAction(() -> database.users().putBio(bio, idUser))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updateBio(String bio){
+    public void updateBio(String bio) {
         Completable.fromAction(() -> database.profile().putBio(bio))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updateAvatarFriend(String avatar, int idUser){
+    public void updateAvatarFriend(String avatar, int idUser) {
         Completable.fromAction(() -> database.users().putAvatar(avatar, idUser))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void updatePassword(String password){
+    public void deleteFriend(int idFriends) {
+        Completable.fromAction(() -> database.friends().deleteFriend(idFriends))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    public void updateChatRead(int read, int idChat) {
+        Completable.fromAction(() -> database.chats().putRead(read, idChat))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+    }
+
+    public void updatePassword(String password) {
         Completable.fromAction(() -> database.profile().putAvatar(password))
                 .subscribeOn(Schedulers.io())
                 .subscribe();
     }
 
-    public void deleteAll(){
+    public void deleteAll() {
         deleteChats();
         deleteFriends();
         deleteMessage();
@@ -164,84 +181,93 @@ public class LocalDB {
         deleteUsers();
     }
 
-    public Maybe<List<TableChats>> getChats(){
+    public Maybe<List<TableChats>> getChats() {
         return database.chats()
                 .getChats()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
-    public Maybe<TableChats> getChat(){
+
+    public Maybe<TableChats> getChat() {
         return database.chats()
                 .getChat()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
-    public Maybe<TableFriends> getFriend(){
+
+    public Maybe<TableFriends> getFriend() {
         return database.friends()
                 .getFriend()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Flowable<List<TableFriends>> getFriends(){
+    public Maybe<TableFriends> getFriend(int idUser) {
+        return database.friends()
+                .getFriend(idUser)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Flowable<List<TableFriends>> getFriends() {
         return database.friends()
                 .getFriends()
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Flowable<TableChats> getIdChatPref(int idUser){
+    public Flowable<TableChats> getIdChatPref(int idUser) {
         return database.chats()
                 .getIdChatPref(idUser)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Flowable<TableProfile> getProfile(){
+    public Flowable<TableProfile> getProfile() {
         return database.profile()
                 .getProfile()
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Maybe<TableUsers> getUser(int idUser){
+    public Maybe<TableUsers> getUser(int idUser) {
         return database.users()
                 .getUser(idUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Maybe<TableMessages> getDialog(int id){
+    public Maybe<TableMessages> getDialog(int id) {
         return database.message()
                 .getDialog(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Maybe<TableChats> getIdChat(int idChat){
+    public Maybe<TableChats> getIdChat(int idChat) {
         return database.chats()
                 .getIdChat(idChat)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Maybe<TableChats> getChatKey(int idUser){
+    public Maybe<TableChats> getChatKey(int idUser) {
         return database.chats()
                 .getChatKey(idUser)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Flowable<List<TableMessages>> getMessages(int idChat){
+    public Flowable<List<TableMessages>> getMessages(int idChat) {
         return database.message()
                 .getMessages(idChat)
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Flowable<TableMessages> getMessage(){
+    public Flowable<TableMessages> getMessage() {
         return database.message()
                 .getMessage()
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Maybe<List<TableMessages>> getDialogs(int idChat){
+    public Maybe<List<TableMessages>> getDialogs(int idChat) {
         return database.message()
                 .getDialogs(idChat)
                 .subscribeOn(Schedulers.io())

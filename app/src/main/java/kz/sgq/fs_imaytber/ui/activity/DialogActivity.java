@@ -1,38 +1,50 @@
 package kz.sgq.fs_imaytber.ui.activity;
 
+import android.app.Dialog;
+import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 import kz.sgq.fs_imaytber.R;
 import kz.sgq.fs_imaytber.mvp.presenter.DialogPresenterImpl;
 import kz.sgq.fs_imaytber.mvp.presenter.interfaces.DialogPresenter;
 import kz.sgq.fs_imaytber.mvp.view.DialogView;
-import kz.sgq.fs_imaytber.room.table.TableMessages;
 import kz.sgq.fs_imaytber.ui.adapters.MessageAdapter;
-import kz.sgq.fs_imaytber.ui.adapters.StikerAdapter;
+import kz.sgq.fs_imaytber.ui.fragment.StikerFragment;
 import kz.sgq.fs_imaytber.util.Message;
 import kz.sgq.fs_imaytber.util.MessageCondition;
-import kz.sgq.fs_imaytber.util.Stikers;
 import kz.sgq.fs_imaytber.util.interfaces.OnSelectedStikerListener;
 
-public class DialogActivity extends AppCompatActivity implements DialogView {
+public class DialogActivity extends AppCompatActivity implements DialogView, OnSelectedStikerListener {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -45,14 +57,25 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
     @BindView(R.id.avatar)
     ImageView avatar;
     @BindView(R.id.stiker)
-    RecyclerView stiker;
+    FrameLayout stiker;
+    @BindView(R.id.tabLayout)
+    TabLayout tabLayout;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    @BindView(R.id.l_stiker)
+    LinearLayout l_stiker;
+
+    private Dialog friendDialog;
+    private Dialog deleteDialog;
+
+    private CircleImageView avatarDialog;
+    private TextView nick;
+    private TextView login;
+    private TextView bio;
+    private Switch notif;
 
     private MessageAdapter adapter;
-    private StikerAdapter stikerAdapter;
     private DialogPresenter presenter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +87,67 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
         getSupportActionBar().setTitle(null);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
-        initStikers();
+        setupViewPager();
         presenter = new DialogPresenterImpl(this,
                 getIntent().getIntExtra("idUser_1", 0),
                 getIntent().getIntExtra("idUser_2", 0));
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putInt("notifId", getIntent().getIntExtra("idUser_2", 0))
+                .apply();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PreferenceManager.getDefaultSharedPreferences(this).edit()
+                .putInt("notifId", 0)
+                .apply();
+    }
+
+    private void setupViewPager() {
+        for (int i = 0; i < 5; i++) {
+            try {
+                InputStream ims = getAssets().open("stiker_" + i + "_00.jpeg");
+                Drawable d = Drawable.createFromStream(ims, null);
+                tabLayout.addTab(tabLayout.newTab().setIcon(d));
+            } catch (IOException ex) {
+            }
+        }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        StikerFragment stikerFragment = new StikerFragment();
+        stikerFragment.createFragment(0);
+        transaction.replace(R.id.stiker, stikerFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                stikerFragment.createFragment(tab.getPosition());
+                transaction.replace(R.id.stiker, stikerFragment);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.popup_menu, menu);
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -77,25 +155,70 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.add_friend:
+                presenter.addFriend();
+                return true;
+            case R.id.delete_friend:
+                deleteDialog.show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private Dialog dialogFriend(int idUser) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_user, null);
+        avatarDialog = view.findViewById(R.id.avatar);
+        nick = view.findViewById(R.id.nick);
+        login = view.findViewById(R.id.login);
+        bio = view.findViewById(R.id.bio);
+        notif = view.findViewById(R.id.notif);
+        notif.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (notif.isChecked())
+                presenter.setNotif(idUser, true);
+            else
+                presenter.setNotif(idUser, false);
+        });
+        builder.setView(view)
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+
+                });
+        AlertDialog dialog = builder.create();
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.hide();
+        return dialog;
+    }
+
     @OnClick(R.id.send)
     public void onClick() {
-        presenter.handlerMessage();
+        presenter.handlerReadMessage();
+    }
+
+    @OnClick(R.id.avatar)
+    public void onClickAvatar() {
+        presenter.getUser();
     }
 
     @OnClick(R.id.b_stiker)
     public void onClickStiker() {
-        if (stiker.getVisibility() == View.VISIBLE)
-            stiker.setVisibility(View.GONE);
+        if (l_stiker.getVisibility() == View.VISIBLE)
+            l_stiker.setVisibility(View.GONE);
         else
-            stiker.setVisibility(View.VISIBLE);
+            l_stiker.setVisibility(View.VISIBLE);
+    }
+
+    private Dialog createDialogDelete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_friend_dialog)
+                .setPositiveButton(R.string.delete_friend, (dialog, id) -> presenter.deleteFriend())
+                .setNegativeButton(R.string.cancel, (dialog, id) -> {
+                });
+        return builder.create();
     }
 
     private void init() {
+        deleteDialog = createDialogDelete();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -116,25 +239,42 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
     }
 
     @OnClick(R.id.fab)
-    public void scrollDown(){
+    public void scrollDown() {
         recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
-    private void initStikers() {
-        LinearLayoutManager horizontalLayoutManagaer = new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false);
-        stiker.setLayoutManager(horizontalLayoutManagaer);
-        stikerAdapter = new StikerAdapter();
-        stiker.setAdapter(stikerAdapter);
-        stikerAdapter.initStiker(Stikers.getOneStikerPack());
-        stikerAdapter.notifyDataSetChanged();
-        stikerAdapter.setOnSelectedStikerListener(new OnSelectedStikerListener() {
-            @Override
-            public void onClickStiker(String stiker) {
-                text.setText(stiker);
-                presenter.handlerMessage();
-            }
-        });
+    @Override
+    public void setDialogUser(String avatar, String nick, String login, String bio, boolean switchBool) {
+        switch (avatar) {
+            case "def1":
+                this.avatarDialog.setImageDrawable(getResources().getDrawable(R.drawable.def1));
+                break;
+            case "def2":
+                this.avatarDialog.setImageDrawable(getResources().getDrawable(R.drawable.def2));
+                break;
+            case "def3":
+                this.avatarDialog.setImageDrawable(getResources().getDrawable(R.drawable.def3));
+                break;
+            case "def4":
+                this.avatarDialog.setImageDrawable(getResources().getDrawable(R.drawable.def4));
+                break;
+            default:
+                Picasso.get()
+                        .load(avatar)
+                        .into(this.avatar);
+                break;
+        }
+        this.nick.setText(nick);
+        this.login.setText(login);
+        this.notif.setChecked(switchBool);
+        if (bio != null)
+            this.bio.setText(bio);
+    }
+
+    @Override
+    public void showDialogUser(int idUser) {
+        friendDialog = dialogFriend(idUser);
+        friendDialog.show();
     }
 
     @Override
@@ -157,13 +297,15 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
     }
 
     @Override
-    public void hideHandler() {
-
+    public void showDeleteFriend() {
+        Toast.makeText(this, getResources().getString(R.string.toast_delete_friend),
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void errorMessage() {
-
+    public void showAddFriend() {
+        Toast.makeText(this, getResources().getString(R.string.toast_add_friend),
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -207,5 +349,11 @@ public class DialogActivity extends AppCompatActivity implements DialogView {
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
+    }
+
+    @Override
+    public void onClickStiker(String stiker) {
+        text.setText(stiker);
+        presenter.handlerReadMessage();
     }
 }

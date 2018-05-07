@@ -12,11 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,7 +24,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kz.sgq.fs_imaytber.R;
-import kz.sgq.fs_imaytber.room.table.TableMessages;
 import kz.sgq.fs_imaytber.util.Message;
 import kz.sgq.fs_imaytber.util.MessageCondition;
 
@@ -52,9 +48,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         return list.size() - 1;
     }
 
-    private boolean handlerVisibly(String message){
-        if (message.length() == 11){
-            if (message.substring(0, message.length()-4).equals("stiker_"))
+    private boolean handlerVisibly(String message) {
+        if (message.length() == 11) {
+            if (message.substring(0, message.length() - 4).equals("stiker_"))
                 return false;
         } else {
             return true;
@@ -108,8 +104,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         ImageView photo;
         @BindView(R.id.stiker)
         ImageView stiker;
-        @BindView(R.id.condition)
-        ImageView condition;
+        @BindView(R.id.m_condition)
+        ImageView m_condition;
+        @BindView(R.id.s_condition)
+        ImageView s_condition;
         @BindView(R.id.s_time)
         TextView s_time;
         @BindView(R.id.m_time)
@@ -136,16 +134,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         private void setCondition(MessageCondition condition) {
             switch (condition) {
                 case DONE:
-                    this.condition.setImageDrawable(itemView.getResources()
+                    this.m_condition.setImageDrawable(itemView.getResources()
                             .getDrawable(R.drawable.done));
+                    this.s_condition.setImageDrawable(itemView.getResources()
+                            .getDrawable(R.drawable.done_dark));
                     break;
                 case ERROR:
-                    this.condition.setImageDrawable(itemView.getResources()
+                    this.m_condition.setImageDrawable(itemView.getResources()
+                            .getDrawable(R.drawable.error));
+                    this.s_condition.setImageDrawable(itemView.getResources()
                             .getDrawable(R.drawable.error));
                     break;
                 case LOADING:
-                    this.condition.setImageDrawable(itemView.getResources()
+                    this.m_condition.setImageDrawable(itemView.getResources()
                             .getDrawable(R.drawable.loading));
+                    this.s_condition.setImageDrawable(itemView.getResources()
+                            .getDrawable(R.drawable.loading_dark));
                     break;
             }
         }

@@ -1,9 +1,6 @@
 package kz.sgq.fs_imaytber.mvp.presenter;
 
-import android.util.Log;
-
 import io.reactivex.CompletableObserver;
-import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subscribers.DisposableSubscriber;
@@ -57,7 +54,6 @@ public class SettingsPresenterImpl implements SettingsPresenter {
 
     @Override
     public void onDestroy() {
-        Log.d("ExitAndDestroy", this.getClass().getName());
         composite.clear();
         view = null;
         model = null;

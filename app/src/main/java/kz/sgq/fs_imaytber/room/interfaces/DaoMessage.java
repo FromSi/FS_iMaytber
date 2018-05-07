@@ -13,7 +13,7 @@ import kz.sgq.fs_imaytber.room.table.TableMessages;
 @Dao
 public interface DaoMessage {
     @Insert
-    void insert (TableMessages... messages);
+    void insert(TableMessages... messages);
 
     @Insert
     void insertAll(List<TableMessages> messagesList);

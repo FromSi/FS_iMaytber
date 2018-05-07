@@ -4,16 +4,13 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
-import java.util.List;
-
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
 import kz.sgq.fs_imaytber.room.table.TableProfile;
 
 @Dao
 public interface DaoProfile {
     @Insert
-    void insert (TableProfile profile);
+    void insert(TableProfile profile);
 
     @Query("SELECT * FROM `tableprofile`")
     Flowable<TableProfile> getProfile();

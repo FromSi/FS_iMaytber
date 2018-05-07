@@ -5,6 +5,8 @@ import kz.sgq.fs_imaytber.util.SocketIMaytber;
 
 public interface LoginModel {
     int getMinSize();
+
     LocalDB getLocal();
+
     SocketIMaytber getSocket();
 }

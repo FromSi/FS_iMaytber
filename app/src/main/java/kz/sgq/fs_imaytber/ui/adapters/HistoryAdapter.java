@@ -21,7 +21,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import kz.sgq.fs_imaytber.R;
-import kz.sgq.fs_imaytber.room.table.TableUsers;
 import kz.sgq.fs_imaytber.util.HistoryZIP;
 import kz.sgq.fs_imaytber.util.interfaces.OnSelectedDialogClick;
 
@@ -57,6 +56,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.itemClick.setOnClickListener(v -> dialogClick
                 .onClick(messageList.get(position).getIdUser()));
         holder.setTime(messageList.get(position).getTime());
+        holder.avatar.setOnClickListener(v ->
+                dialogClick.onClickDialog(messageList.get(position).getIdUser())
+        );
+        holder.setRead(messageList.get(position).getRead());
     }
 
     @Override
@@ -75,10 +78,24 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         CardView itemClick;
         @BindView(R.id.time)
         TextView time;
+        @BindView(R.id.read)
+        TextView read;
+        @BindView(R.id.c_read)
+        CardView c_read;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        private void setRead(int read) {
+            if (read > 0) {
+                this.read.setText(String.valueOf(read));
+                this.c_read.setVisibility(View.VISIBLE);
+            } else {
+                this.read.setText(String.valueOf(0));
+                this.c_read.setVisibility(View.GONE);
+            }
         }
 
         private void setNick(String nick) {
@@ -112,7 +129,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         }
 
         private void setContent(String content) {
-            this.content.setText(content);
+            if (content.length() == 11) {
+                if (content.substring(0, content.length() - 4).equals("stiker_")) {
+                    this.content.setText("[Стикер]");
+                } else {
+                    this.content.setText(content);
+                }
+            } else {
+                this.content.setText(content);
+            }
         }
 
         private void setTime(String time) {

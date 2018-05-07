@@ -2,23 +2,23 @@ package kz.sgq.fs_imaytber.ui.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.firebase.storage.FirebaseStorage;
@@ -58,6 +58,8 @@ public class SettingsFragment extends Fragment implements SettingsView {
     CircleImageView avatar;
     @BindView(R.id.bio)
     TextView bio;
+    @BindView(R.id.notif)
+    Switch notif;
 
     private SettingsPresenter presenter;
     private SharedPreferences preferences;
@@ -99,7 +101,6 @@ public class SettingsFragment extends Fragment implements SettingsView {
     public void onStart() {
         super.onStart();
         presenter = new SettingsPresenterImpl(this);
-        Log.d("onCreateView123", "onStart");
     }
 
     private void init() {
@@ -109,6 +110,23 @@ public class SettingsFragment extends Fragment implements SettingsView {
             radioDialogs.setChecked(true);
         else
             radioFriends.setChecked(true);
+
+        if (PreferenceManager.getDefaultSharedPreferences(view.getContext())
+                .getBoolean("notif", true))
+            notif.setChecked(true);
+        else
+            notif.setChecked(false);
+
+        notif.setOnClickListener(v -> {
+            if (notif.isChecked())
+                PreferenceManager.getDefaultSharedPreferences(view.getContext()).edit()
+                        .putBoolean("notif", true)
+                        .apply();
+            else
+                PreferenceManager.getDefaultSharedPreferences(view.getContext()).edit()
+                        .putBoolean("notif", false)
+                        .apply();
+        });
     }
 
     @OnClick({R.id.save, R.id.avatar})
@@ -204,7 +222,7 @@ public class SettingsFragment extends Fragment implements SettingsView {
     }
 
     @OnClick(R.id.bio)
-    public void onClickBio(){
+    public void onClickBio() {
         dialogBio.show();
     }
 
@@ -240,7 +258,7 @@ public class SettingsFragment extends Fragment implements SettingsView {
         presenter.onDestroy();
     }
 
-    private Dialog initDialogBio(Context context){
+    private Dialog initDialogBio(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View view = getLayoutInflater().inflate(R.layout.dialog_bio, null);
         TextView bio = view.findViewById(R.id.bio);
@@ -251,7 +269,8 @@ public class SettingsFragment extends Fragment implements SettingsView {
                             !bio.getText().toString().isEmpty())
                         presenter.onClickBio(bio.getText().toString());
                 })
-        .setNegativeButton(R.string.cancel, (dialog, which) -> {});
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                });
         return builder.create();
     }
 

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -26,6 +27,14 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
 
     public void addFriend(TableUsers tableUsers) {
         list.add(tableUsers);
+        notifyDataSetChanged();
+    }
+
+    public void deleteFriend(int idUser) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getIdusers() == idUser)
+                list.remove(i);
+        }
         notifyDataSetChanged();
     }
 
@@ -50,8 +59,8 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
                 list.get(position).getIdusers());
         holder.setAvatar(list.get(position).getAvatar());
         holder.itemClick.setOnClickListener(v -> dialogClick
-                .onClick(list.get(position).getIdusers()));
-
+                .onClickDialog(list.get(position).getIdusers()));
+        holder.delete_friend.setOnClickListener(v -> dialogClick.onClickDelete(list.get(position).getIdusers()));
     }
 
     public void setOnSelectedDialogClick(final OnSelectedDialogClick dialogClick) {
@@ -66,15 +75,14 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.nick)
         TextView nick;
-
         @BindView(R.id.idUser)
         TextView idUser;
-
         @BindView(R.id.avatar)
         CircleImageView avatar;
-
         @BindView(R.id.itemClick)
         CardView itemClick;
+        @BindView(R.id.delete_friend)
+        ImageView delete_friend;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -83,7 +91,7 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.ViewHolder
 
         private void setText(String nick, int idUser) {
             this.nick.setText(nick);
-            this.idUser.setText("#" + idUser);
+            this.idUser.setText(itemView.getResources().getString(R.string.id_user) + " " + idUser);
         }
 
         private void setAvatar(String url) {

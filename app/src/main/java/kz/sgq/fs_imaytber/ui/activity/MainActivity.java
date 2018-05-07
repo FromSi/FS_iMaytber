@@ -2,6 +2,7 @@ package kz.sgq.fs_imaytber.ui.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
         historyFragment = new HistoryFragment();
         friendFragment = new FriendFragment();
         settingsFragment = new SettingsFragment();
-        if (getIntent().getBooleanExtra("fragment", false)){
+        if (getIntent().getBooleanExtra("fragment", false)) {
             navigationView.getMenu().getItem(1).setChecked(true);
             Objects.requireNonNull(getSupportActionBar()).setTitle("Друзья");
             stepFragments(friendFragment);
@@ -105,11 +106,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
     private Dialog initExitAccount() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.exit)
-                .setPositiveButton(R.string.ok, (dialog, id) -> {
-                    presenter.exitActivity();
-                })
+                .setPositiveButton(R.string.ok, (dialog, id) -> presenter.exitActivity())
                 .setNegativeButton(R.string.cancel, (dialog, id) -> {
-                    // User cancelled the dialog
                 });
         return builder.create();
     }

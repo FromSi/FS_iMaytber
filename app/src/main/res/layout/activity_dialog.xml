@@ -25,7 +25,6 @@
                 android:fitsSystemWindows="true"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/avatar"
                     android:layout_width="50dp"
@@ -40,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
                     android:textColor="#fff"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
 
             </android.support.v7.widget.Toolbar>
 
@@ -55,29 +54,21 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/stiker"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/avatar_height"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:visibility="gone" />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 
+
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
-            app:fabSize="mini"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
-            android:src="@drawable/down" />
+            android:src="@drawable/down"
+            app:fabSize="mini" />
     </android.support.design.widget.CoordinatorLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -107,5 +98,24 @@
             android:layout_marginStart="12dp"
             android:background="@null"
             android:src="@drawable/send" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/l_stiker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <FrameLayout
+            android:id="@+id/stiker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 </LinearLayout>

@@ -24,6 +24,12 @@ public interface DaoFriends {
     @Query("SELECT * FROM `tablefriends` ORDER BY `idfriends` LIMIT 1")
     Maybe<TableFriends> getFriend();
 
+    @Query("SELECT * FROM `tablefriends` WHERE `iduser_2`=:idUser")
+    Maybe<TableFriends> getFriend(int idUser);
+
+    @Query("DELETE FROM `tablefriends` WHERE `idfriends`=:idFriends")
+    void deleteFriend(int idFriends);
+
     @Query("DELETE FROM `tablefriends`")
     void delete();
 }

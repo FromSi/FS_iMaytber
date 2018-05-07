@@ -1,7 +1,5 @@
 package kz.sgq.fs_imaytber.mvp.presenter;
 
-import android.util.Log;
-
 import io.reactivex.observers.DisposableObserver;
 import kz.sgq.fs_imaytber.infraestructure.networking.gson.post.POSTUser;
 import kz.sgq.fs_imaytber.mvp.model.LoginModelImpl;
@@ -62,7 +60,6 @@ public class SignupPresenterImpl implements LoginPresenter {
 
     @Override
     public void onDestroy() {
-        Log.d("ExitAndDestroy", this.getClass().getName());
         view = null;
         model = null;
     }
