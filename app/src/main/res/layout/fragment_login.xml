@@ -36,7 +36,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:digits="abcdefghijklmnopqrstuvwxyz0123456789"
-                            android:hint="login"
+                            android:hint="@string/log"
                             android:maxLength="16" />
                     </android.support.design.widget.TextInputLayout>
 
@@ -50,7 +50,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:digits="abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                            android:hint="password"
+                            android:hint="@string/password"
                             android:inputType="textPassword"
                             android:maxLength="40" />
                     </android.support.design.widget.TextInputLayout>
@@ -59,7 +59,7 @@
                         android:id="@+id/ok"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Login" />
+                        android:text="@string/login" />
 
                     <TextView
                         android:id="@+id/change"
@@ -68,7 +68,7 @@
                         android:layout_marginTop="8dp"
                         android:clickable="true"
                         android:focusable="true"
-                        android:text="Зарегистрироваться"
+                        android:text="@string/signup"
                         android:textSize="18sp" />
 
                 </LinearLayout>

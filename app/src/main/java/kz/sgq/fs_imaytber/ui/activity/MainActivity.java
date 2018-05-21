@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -40,6 +41,13 @@ public class MainActivity extends AppCompatActivity implements MainView {
     DrawerLayout drawerLayout;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindString(R.string.contacts)
+    String contacts;
+    @BindString(R.string.dialogs)
+    String dialogs;
+    @BindString(R.string.settings)
+    String settings;
 
     private View headerNavigation;
     private TextView nick;
@@ -72,17 +80,17 @@ public class MainActivity extends AppCompatActivity implements MainView {
         settingsFragment = new SettingsFragment();
         if (getIntent().getBooleanExtra("fragment", false)) {
             navigationView.getMenu().getItem(1).setChecked(true);
-            Objects.requireNonNull(getSupportActionBar()).setTitle("Друзья");
+            Objects.requireNonNull(getSupportActionBar()).setTitle(contacts);
             stepFragments(friendFragment);
         } else {
             if (getSharedPreferences("local", MODE_PRIVATE)
                     .getBoolean("main_fragment", true)) {
                 navigationView.getMenu().getItem(0).setChecked(true);
-                Objects.requireNonNull(getSupportActionBar()).setTitle("Диалоги");
+                Objects.requireNonNull(getSupportActionBar()).setTitle(dialogs);
                 stepFragments(historyFragment);
             } else {
                 navigationView.getMenu().getItem(1).setChecked(true);
-                Objects.requireNonNull(getSupportActionBar()).setTitle("Друзья");
+                Objects.requireNonNull(getSupportActionBar()).setTitle(dialogs);
                 stepFragments(friendFragment);
             }
         }
@@ -176,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                         navigationView.getMenu().getItem(0).setChecked(true);
                         navigationView.getMenu().getItem(1).setChecked(false);
                         navigationView.getMenu().getItem(2).setChecked(false);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Диалоги");
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(dialogs);
                         stepFragments(historyFragment);
                     }
                     break;
@@ -185,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                         navigationView.getMenu().getItem(0).setChecked(false);
                         navigationView.getMenu().getItem(1).setChecked(true);
                         navigationView.getMenu().getItem(2).setChecked(false);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Друзья");
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(contacts);
                         stepFragments(friendFragment);
                     }
                     break;
@@ -194,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
                         navigationView.getMenu().getItem(0).setChecked(false);
                         navigationView.getMenu().getItem(1).setChecked(false);
                         navigationView.getMenu().getItem(2).setChecked(true);
-                        Objects.requireNonNull(getSupportActionBar()).setTitle("Настройки");
+                        Objects.requireNonNull(getSupportActionBar()).setTitle(settings);
                         stepFragments(settingsFragment);
                     }
                     break;

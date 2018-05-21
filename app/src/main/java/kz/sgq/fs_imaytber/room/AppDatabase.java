@@ -16,7 +16,7 @@ import kz.sgq.fs_imaytber.room.table.TableUsers;
 
 @Database(entities = {TableChats.class, TableFriends.class,
         TableMessages.class, TableProfile.class,
-        TableUsers.class}, version = 1)
+        TableUsers.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract DaoChats chats();
 

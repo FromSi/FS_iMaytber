@@ -171,7 +171,7 @@
                             android:layout_width="match_parent"
                             android:digits="abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                             android:layout_height="wrap_content"
-                            android:hint="Nick" />
+                            android:hint="@string/nick" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -186,7 +186,7 @@
                             android:layout_width="match_parent"
                             android:digits="abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                             android:layout_height="wrap_content"
-                            android:hint="password" />
+                            android:hint="@string/password" />
                     </android.support.design.widget.TextInputLayout>
 
                     <Button
