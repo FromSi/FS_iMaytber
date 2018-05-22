@@ -22,6 +22,9 @@ public interface SocketService {
     @DELETE("/friend")
     Completable deleteFriend(@Query("idfriends") int idfriends);
 
+    @DELETE("/message")
+    Completable deleteMessage(@Query("iduser") int iduser, @Query("idmessage") int idmessage);
+
     @GET("/friend")
     Observable<List<GETFriend>> getFriend(@Query("iduser") int iduser);
 

@@ -39,7 +39,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ui.activity.DialogActivity"></activity>
+        <activity android:name=".ui.activity.DialogActivity"/>
     </application>
 
 </manifest>

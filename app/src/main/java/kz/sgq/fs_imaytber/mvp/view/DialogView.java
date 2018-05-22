@@ -13,6 +13,8 @@ public interface DialogView {
     void showDeleteFriend();
 
     void showAddFriend();
+    void hideLoading();
+    void showErrorDelete();
 
     void showDialogUser(int idUser);
 

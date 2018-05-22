@@ -127,4 +127,10 @@ public class SocketIMaytber {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Completable deleteMessage(int idUser, int idMessage) {
+        return socket.deleteMessage(idUser, idMessage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
 }

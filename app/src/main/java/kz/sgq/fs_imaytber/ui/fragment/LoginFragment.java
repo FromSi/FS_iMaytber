@@ -15,6 +15,7 @@ import android.widget.EditText;
 
 import java.util.Objects;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -33,6 +34,8 @@ public class LoginFragment extends Fragment implements LoginView {
     EditText login;
     @BindView(R.id.password)
     EditText password;
+    @BindString(R.string.loading)
+    String loadingText;
 
     private ProgressDialog loading;
     private LoginPresenter presenter;
@@ -65,7 +68,7 @@ public class LoginFragment extends Fragment implements LoginView {
         super.onViewCreated(view, savedInstanceState);
         presenter = new LoginPresenterImpl(this);
         loading = new ProgressDialog(view.getContext());
-        loading.setMessage("Loading");
+        loading.setMessage(loadingText);
     }
 
     @Override

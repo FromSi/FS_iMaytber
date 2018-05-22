@@ -19,7 +19,9 @@
     <string name="error_exit">Экстренный выход</string>
     <string name="add_friend">Добавить</string>
     <string name="delete_friend">Удалить</string>
+    <string name="error_delete_text">Ошибка при удалении сообщения</string>
     <string name="delete_friend_dialog">Вы точно хотите удалить пользователя из контактов?</string>
+    <string name="delete_message_dialog">Вы точно хотите удалить это сообщение?</string>
 
     <string name="contacts">Контакты</string>
     <string name="dialogs">Диалоги</string>

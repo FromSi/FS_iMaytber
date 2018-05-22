@@ -26,11 +26,13 @@ import butterknife.ButterKnife;
 import kz.sgq.fs_imaytber.R;
 import kz.sgq.fs_imaytber.util.Message;
 import kz.sgq.fs_imaytber.util.MessageCondition;
+import kz.sgq.fs_imaytber.util.interfaces.OnClickListenerDelete;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     private List<Message> list = new ArrayList<>();
     private List<MessageCondition> conditionList = new ArrayList<>();
     private List<Boolean> visibleList = new ArrayList<>();
+    private OnClickListenerDelete listenerDelete;
     private int idUser;
 
     public void setIdUser(int idUser) {
@@ -56,6 +58,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             return true;
         }
         return true;
+    }
+
+    public void setOnClickListenerDelete(final OnClickListenerDelete listenerDelete) {
+        this.listenerDelete = listenerDelete;
     }
 
     public void uploadCondition(int idMessage, MessageCondition condition) {
@@ -86,6 +92,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             holder.setLContent(true);
         else
             holder.setLContent(false);
+        holder.stiker.setOnClickListener(v -> listenerDelete
+                .onClickDeleteMessage(list.get(position).getIdMessage()));
+        holder.containerTwo.setOnClickListener(v -> listenerDelete
+                .onClickDeleteMessage(list.get(position).getIdMessage()));
     }
 
     @Override

@@ -12,4 +12,5 @@ public interface DialogPresenter {
     void onDestroy();
 
     void getUser();
+    void deleteMessage(int idMessage);
 }

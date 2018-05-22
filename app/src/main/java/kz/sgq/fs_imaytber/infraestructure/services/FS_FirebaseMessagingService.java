@@ -41,6 +41,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
     private String key;
     private String time;
     private int idmessages;
+    private int idmessage;
     private int idchats;
     private int iduser;
     private int iduser_1;
@@ -100,6 +101,10 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
             iduser = Integer.parseInt(remoteMessage.getData().get("iduser"));
             bio = remoteMessage.getData().get("bio");
             updateBio();
+        } else if (remoteMessage.getData().get("idmessage") != null) {
+            Log.d("MyLilili", "else if");
+            idmessage = Integer.parseInt(remoteMessage.getData().get("idmessage"));
+            deleteMessage();
         }
     }
 
@@ -130,6 +135,7 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
         avatar = null;
         key = null;
         time = null;
+        idmessage = 0;
         idmessages = 0;
         idchats = 0;
         iduser = 0;
@@ -149,6 +155,12 @@ public class FS_FirebaseMessagingService extends FirebaseMessagingService {
 
     private void updateBio() {
         localDB.updateBioFriend(bio, iduser);
+        clear();
+    }
+
+    private void deleteMessage() {
+        Log.d("MyLilili", "deleteMessage");
+        localDB.deleteMessageId(idmessage);
         clear();
     }
 

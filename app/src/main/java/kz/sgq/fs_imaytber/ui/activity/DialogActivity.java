@@ -1,6 +1,7 @@
 package kz.sgq.fs_imaytber.ui.activity;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -30,6 +31,7 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.io.InputStream;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -42,6 +44,7 @@ import kz.sgq.fs_imaytber.ui.adapters.MessageAdapter;
 import kz.sgq.fs_imaytber.ui.fragment.StikerFragment;
 import kz.sgq.fs_imaytber.util.Message;
 import kz.sgq.fs_imaytber.util.MessageCondition;
+import kz.sgq.fs_imaytber.util.interfaces.OnClickListenerDelete;
 import kz.sgq.fs_imaytber.util.interfaces.OnSelectedStikerListener;
 
 public class DialogActivity extends AppCompatActivity implements DialogView, OnSelectedStikerListener {
@@ -64,6 +67,10 @@ public class DialogActivity extends AppCompatActivity implements DialogView, OnS
     FloatingActionButton fab;
     @BindView(R.id.l_stiker)
     LinearLayout l_stiker;
+    @BindString(R.string.loading)
+    String loadingText;
+    @BindString(R.string.error_delete_text)
+    String error_delete_text;
 
     private Dialog friendDialog;
     private Dialog deleteDialog;
@@ -77,11 +84,15 @@ public class DialogActivity extends AppCompatActivity implements DialogView, OnS
     private MessageAdapter adapter;
     private DialogPresenter presenter;
 
+    private ProgressDialog loading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
         ButterKnife.bind(this);
+        loading = new ProgressDialog(this);
+        loading.setMessage(loadingText);
         fab.hide(null);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(null);
@@ -94,6 +105,7 @@ public class DialogActivity extends AppCompatActivity implements DialogView, OnS
         PreferenceManager.getDefaultSharedPreferences(this).edit()
                 .putInt("notifId", getIntent().getIntExtra("idUser_2", 0))
                 .apply();
+        showDialogDeleteMessage();
     }
 
     @Override
@@ -102,6 +114,21 @@ public class DialogActivity extends AppCompatActivity implements DialogView, OnS
         PreferenceManager.getDefaultSharedPreferences(this).edit()
                 .putInt("notifId", 0)
                 .apply();
+    }
+
+    void showDialogDeleteMessage(){
+        adapter.setOnClickListenerDelete(idMessage -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.delete_message_dialog)
+                    .setPositiveButton(R.string.delete_friend, (dialog, id) -> {
+                        presenter.deleteMessage(idMessage);
+                        loading.show();
+                    })
+                    .setNegativeButton(R.string.cancel, (dialog, id) -> {
+                    });
+            Dialog dialog = builder.create();
+            dialog.show();
+        });
     }
 
     private void setupViewPager() {
@@ -306,6 +333,16 @@ public class DialogActivity extends AppCompatActivity implements DialogView, OnS
     public void showAddFriend() {
         Toast.makeText(this, getResources().getString(R.string.toast_add_friend),
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void hideLoading() {
+        loading.dismiss();
+    }
+
+    @Override
+    public void showErrorDelete() {
+        Toast.makeText(this, error_delete_text, Toast.LENGTH_SHORT).show();
     }
 
     @Override

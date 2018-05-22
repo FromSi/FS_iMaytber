@@ -114,6 +114,8 @@ public class DialogPresenterImpl implements DialogPresenter {
                                                                 .addMessage(new Message(messagesList
                                                                         .get(i).getIduser(),
                                                                         messagesList.get(i)
+                                                                                .getIdmessages(),
+                                                                        messagesList.get(i)
                                                                                 .getContent(),
                                                                         messagesList.get(i)
                                                                                 .getTime())),
@@ -127,6 +129,8 @@ public class DialogPresenterImpl implements DialogPresenter {
                                             view.uploadCondition(view
                                                             .addMessage(new Message(messagesList
                                                                     .get(i).getIduser(),
+                                                                    messagesList.get(i)
+                                                                            .getIdmessages(),
                                                                     messagesList.get(i)
                                                                             .getContent(),
                                                                     messagesList.get(i)
@@ -181,6 +185,36 @@ public class DialogPresenterImpl implements DialogPresenter {
 
                     }
                 });
+    }
+
+    @Override
+    public void deleteMessage(int idMessage) {
+        model.getSocket()
+                .deleteMessage(model.getIdUser_2(),
+                        idMessage)
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        deleteLocalMessage(idMessage);
+                        view.hideLoading();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        view.showErrorDelete();
+                        view.hideLoading();
+                    }
+                });
+    }
+
+    private void deleteLocalMessage(int idMessage){
+        model.getLocal()
+                .deleteMessageId(idMessage);
     }
 
     private void initAvatarAndNick() {

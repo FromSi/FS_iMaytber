@@ -1,5 +1,7 @@
 package kz.sgq.fs_imaytber.util;
 
+import android.util.Log;
+
 import java.util.List;
 
 import io.reactivex.Completable;
@@ -92,6 +94,13 @@ public class LocalDB {
         Completable.fromAction(() -> database.message().delete())
                 .subscribeOn(Schedulers.io())
                 .subscribe();
+    }
+
+    public void deleteMessageId(int idMessage) {
+        Completable.fromAction(() -> database.message().deleteMessage(idMessage))
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+        Log.d("MyLilili", "deleteMessageId");
     }
 
 
