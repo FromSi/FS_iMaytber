@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">iMaytber</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+    <string name="cancel">Болдырмау</string>
+    <string name="ok">Қабылдау</string>
+    <string name="password">Құпия сөз</string>
+    <string name="nick">Бүркеншік аты</string>
+    <string name="log">Кіру</string>
+    <string name="login">Жүйеге кіріңіз</string>
+    <string name="signup">Тіркеу формасы</string>
+    <string name="exit">Тіркелгіңізден шығатынына сенімдісіз бе?</string>
+    <string name="id_user">ID</string>
+    <string name="loading">Жүктеу</string>
+    <string name="save">Сақтау</string>
+    <string name="repeat">Қайталау</string>
+    <string name="error_nick">Бірнеше таңбаны енгіздіңіз</string>
+    <string name="error_login">Бірнеше таңбаны енгіздіңіз</string>
+    <string name="error_password">Сіз әлсіз құпия сөзді енгіздіңіз</string>
+    <string name="error_exit">Төтенше шығу</string>
+    <string name="add_friend">Жүктеп салу</string>
+    <string name="delete_friend">Жою</string>
+    <string name="error_delete_text">Хабарды жою қатесі</string>
+    <string name="delete_friend_dialog">Пайдаланушыны контактілерден алып тастағыңыз келе ме?</string>
+    <string name="delete_message_dialog">Сіз бұл хабарды жойғыңыз келе ме?</string>
+
+    <string name="contacts">Достар</string>
+    <string name="dialogs">Диалогтар</string>
+    <string name="settings">Параметрлер</string>
+    <string name="exit_menu">Шығу</string>
+
+    <string name="toast_delete_friend">Контактілерден жойылды</string>
+    <string name="toast_add_friend">Пайдаланушы контактілерге қосылды</string>
+
+    <string name="snacbar_">Жүктеу</string>
+    <string name="snacbar_add_friend">Қосылу қатесі</string>
+    <string name="snacbar_error_connect">Кіру сәтсіз аяқталды</string>
+    <string name="snacbar_error_create">Тіркеу қатесі</string>
+    <string name="snacbar_success_settings">Параметрлер сақталды</string>
+    <string name="snacbar_error_settings">Сақтау кезінде қате</string>
+    <string name="snacbar_error_upload_image">Суретті жүктеу кезінде қате</string>
+    <string name="hint_text">Мәтін жазу</string>
+    <string name="bio">Күйі</string>
+    <string name="notification">Хабарламалар</string>
+    <string name="no_dialogs">Сөйлесулер жоқ</string>
+    <string name="no_contacts">Контактілер жоқ</string>
+    <string name="profile">Профиль</string>
+    <string name="bio_help">Өзіңіз туралы бірнеше жолды қосуға болады. Сіздің профиліңізді қарап шыққан кез келген адам осы мәтінді көреді</string>
+    <string name="bio_hint">Өзі жайлы</string>
+    <string name="bio_def">Ақпарат жоқ</string>
+</resources>

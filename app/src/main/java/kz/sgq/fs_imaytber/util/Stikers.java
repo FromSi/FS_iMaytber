@@ -11,10 +11,10 @@ public class Stikers {
         return ONE_STIKERS_PACK;
     }
 
-    public static List<String> getOneStikerPack() {
+    public static List<String> getTwoStikerPack() {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < ONE_STIKERS_PACK; i++) {
-            if (i <= 10)
+            if (i <= 9)
                 list.add("stiker_0_0" + i);
             else
                 list.add("stiker_0_" + i);
@@ -22,10 +22,10 @@ public class Stikers {
         return list;
     }
 
-    public static List<String> getTwoStikerPack() {
+    public static List<String> getOneStikerPack() {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < ONE_STIKERS_PACK; i++) {
-            if (i <= 10)
+            if (i <= 9)
                 list.add("stiker_1_0" + i);
             else
                 list.add("stiker_1_" + i);
@@ -36,7 +36,7 @@ public class Stikers {
     public static List<String> getThreeStikerPack() {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < ONE_STIKERS_PACK; i++) {
-            if (i <= 10)
+            if (i <= 9)
                 list.add("stiker_2_0" + i);
             else
                 list.add("stiker_2_" + i);
@@ -47,7 +47,7 @@ public class Stikers {
     public static List<String> getFourStikerPack() {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < ONE_STIKERS_PACK; i++) {
-            if (i <= 10)
+            if (i <= 9)
                 list.add("stiker_3_0" + i);
             else
                 list.add("stiker_3_" + i);
@@ -58,7 +58,7 @@ public class Stikers {
     public static List<String> getFiveStikerPack() {
         List<String> list = new ArrayList<>();
         for (int i = 0; i < ONE_STIKERS_PACK; i++) {
-            if (i <= 10)
+            if (i <= 9)
                 list.add("stiker_4_0" + i);
             else
                 list.add("stiker_4_" + i);

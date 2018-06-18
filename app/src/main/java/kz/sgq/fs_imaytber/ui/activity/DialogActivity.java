@@ -116,7 +116,7 @@ public class DialogActivity extends AppCompatActivity implements DialogView, OnS
                 .apply();
     }
 
-    void showDialogDeleteMessage(){
+    void showDialogDeleteMessage() {
         adapter.setOnClickListenerDelete(idMessage -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.delete_message_dialog)
@@ -134,7 +134,15 @@ public class DialogActivity extends AppCompatActivity implements DialogView, OnS
     private void setupViewPager() {
         for (int i = 0; i < 5; i++) {
             try {
-                InputStream ims = getAssets().open("stiker_" + i + "_00.jpeg");
+                //A bike
+                int j;
+                if (i == 0)
+                    j = 1;
+                else if (i == 1)
+                    j = 0;
+                else
+                    j = i;
+                InputStream ims = getAssets().open("stiker_" + j + "_00.jpeg");
                 Drawable d = Drawable.createFromStream(ims, null);
                 tabLayout.addTab(tabLayout.newTab().setIcon(d));
             } catch (IOException ex) {
