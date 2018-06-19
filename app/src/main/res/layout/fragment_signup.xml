@@ -43,7 +43,6 @@
                             android:id="@+id/nick"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:digits="abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                             android:hint="@string/nick"
                             android:maxLength="16" />
                     </android.support.design.widget.TextInputLayout>
